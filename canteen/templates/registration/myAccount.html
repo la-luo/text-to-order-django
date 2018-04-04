@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>My Restaurant - My Account</title>
+  
+  {% load static %}
+<link rel="stylesheet" href="{% static 'canteen/bulma-0.2.3/css/bulma.css' %}" />
+<link rel="stylesheet" href="{% static 'canteen/font-awesome-4.7.0/css/font-awesome.min.css' %}" />
+
+</head>
+
+<body>
+    <section class="hero is-primary is-medium is-bold is-warning">
+    <!-- Hero header: will stick at the top -->
+    <div class="hero-head">
+      <header class="nav">
+        <div class="container">
+          <div class="nav-item">
+            <a class="title" href="{% url "home_view" %}">
+              <strong>My Restaurant</strong>
+            </a>
+          </div>
+          <span class="nav-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+          <div class="nav-right nav-menu">
+            <span class="nav-item">
+              <a class="button is-dark" href="{% url "logout" %}">
+                <i class="fa fa-user"></i>
+                <span>&nbsp;Log out</span>
+              </a>
+            </span>
+          </div>
+        </div>
+      </header>
+    </div>
+
+    <!-- Hero content: will be in the middle -->
+    <div class="hero-body">
+      <div class="container">
+
+        <h2 class="title is-2">
+          <strong>My Restaurant Information</strong>
+        </h2>
+
+      </div>
+    </div>
+ </section>
+
+
+<div class="section">
+
+  <div class="container">
+
+    <div class="columns">
+      <div class="column">
+         <h3 class="title is-4">
+            <strong> You have {{ restaurant_list|length }} restaurant(s).</strong>
+          </h3>
+      </div>
+    </div>
+
+    <div class="columns">
+        <div class="column">
+
+            {% if restaurant_list %} 
+              {% for each in restaurant_list %}
+
+            <div class="tile is-parent">
+                <div class="tile box is-child">
+                    <div class="columns">
+                        <div class="column is-2">
+                            <figure class="image is-64x64 is-left">
+                                <img src="https://bulma.io/images/placeholders/128x128.png" alt="Image">
+                            </figure>
+                        </div>
+                        <div class="column">
+                            <div class="content">
+                                <p>
+                                    <strong>{{ each.name }} </strong>
+                                    <br> Review: {{ each.nums_stars }}/5
+                                    <br> Address: {{ each.address }}
+                                </p>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    <br> 
+    <div class="columns">
+      <div class="column">
+         <div class="content">
+          <div class="title is-5">
+            <strong> {{ each.name }} menu(s):</strong>
+          </div>
+            {% for each_menu in each.get_menu %}
+              <div class="columns">
+                <div class="column">
+                  {{ each_menu.name }}
+                  <br>{{ each_menu.info }}
+                  <br>Last updated time: {{ each_menu.last_updated }}
+                  <br>
+                </div>
+                <div class="column">
+                    <br><a class="button is-right is-dark" href="{% url "edit_menu_view" each_menu.id %}">
+                       <span>&nbsp;Edit this menu</span>
+                    </a>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+      </div>
+    </div>
+
+          {% endfor %} 
+      {% endif %}
+
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

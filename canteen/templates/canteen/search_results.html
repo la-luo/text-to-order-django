@@ -1,0 +1,30 @@
+<html>     
+
+    <head>         
+        <title>My Good Canteen - Search Result</title>    
+
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'canteen/bulma-0.2.3/css/bulma.css' %}" />
+        <link rel="stylesheet" href="{% static 'canteen/font-awesome-4.7.0/css/font-awesome.min.css' %}" /> 
+
+    </head>     
+
+    <body>       
+        <p>You searched for: <strong>{{ query }}</strong></p>
+   
+        {% if canteen %}           
+            <p>Found {{ canteen|length }} canteen {{ canteen|pluralize }}.</p> 
+            <ul>               
+                {% for c in canteen %}               
+                <h2>{{ c.name }}</h2>  
+                    <li> Name &emsp; Price &emsp; Review(0-5)</li>
+                    {% for d in c.dish_set.all %}
+                         <li>{{ d.name }} &emsp; {{ d.price }} &emsp; {{ d.nums_stars }}  </li>
+                    {% endfor %}   
+                {% endfor %}           
+            </ul>       
+        {% else %}           
+            <p>No restaurant matched your search criteria.</p>       
+        {% endif %}     
+    </body>
+</html>

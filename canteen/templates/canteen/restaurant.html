@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>My Restaurant</title>
+  
+  {% load static %}
+<link rel="stylesheet" href="{% static 'canteen/bulma-0.2.3/css/bulma.css' %}" />
+<link rel="stylesheet" href="{% static 'canteen/font-awesome-4.7.0/css/font-awesome.min.css' %}" />
+
+</head>
+
+<body>
+    <section class="hero is-warning">
+    <!-- Hero header: will stick at the top -->
+    <div class="hero-head">
+      <header class="nav">
+        <div class="container">
+          <div class="nav-item">
+            <a class="title" href="{% url "home_view" %}">
+              <strong>My Restaurant</strong>
+            </a>
+          </div>
+          <span class="nav-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+          <div class="nav-right nav-menu">
+            <span class="nav-item">
+              <a class="button is-dark" >
+                <i class="fa fa-home"></i>
+                <span>&nbsp;Log in</span>
+              </a>
+              <a class="button is-dark" href="{% url "signup" %}">
+                <i class="fa fa-user"></i>
+                <span>&nbsp;Sign up</span>
+              </a>
+            </span>
+          </div>
+        </div>
+      </header>
+    </div>
+
+    <!-- Hero content: will be in the middle -->
+    <div class="hero-body">
+      <div class="container has-text-centered">
+        <h1 class="title is-1">
+          <strong>{{ res.name }}</strong>
+        </h1>
+        <br>
+        <h2 class="subtitle">
+          Address: {{ res.address }}&nbsp;&nbsp; Call: {{ res.phone_number }}
+        </h2>
+      </div>
+    </div>
+
+        <!-- Hero footer: will stick at the bottom -->
+    <div class="hero-foot">
+      <nav class="tabs">
+        <div class="container">
+          <div class="nav-item">
+      {% if errors %}
+        <ul>
+          {% for error in errors %}
+            <li> {{ error }} </li> 
+          {% endfor %} 
+        </ul>
+      {% endif %} 
+         
+         <form action="" method="get">
+            <input class="input"  type="text" name="q">
+            <input type="submit" value="Search" class="button is-dark" style="padding-left:5px; margin-left:5px"; background-color:#FF3860">
+         </form>
+          </div>
+        </div>
+      </nav>
+    </div>
+
+  </section>
+
+<div class="container">
+    <br>
+
+    <div class="columns">
+        <div class="column">
+
+            {% for each in res.get_menu %}
+
+            <div class="tile is-parent">
+                <div class="tile box is-child">
+                    <div class="columns">
+                        <div class="column">
+                            <div class="content">
+                                <p>
+                                    <strong>{{ each.name }} </strong>
+                                    <br> {{ each.info }}
+                                    <br> Last updated time: {{ each.last_updated }}
+                                </p>
+
+                            </div>
+                        </div>
+                        <div class="column-2">
+                          <br>
+                          <a class="button is-dark" href="{% url "menu_view" each.id %}">
+                             <span>&nbsp;Select this menu</span>
+                          </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %} 
+        </div>
+
+        <div class="column">
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
