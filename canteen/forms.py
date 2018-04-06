@@ -55,20 +55,22 @@ class SignUpForm(forms.ModelForm):
 
 class menuForm(forms.ModelForm):
     dish_name = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={'size':'30', 'class':'inputText'}))
+    dish_number = forms.CharField(max_length=10, required=True, widget=forms.TextInput(attrs={'size':'30', 'class':'inputText'}))
     dish_price = forms.FloatField(required=True, widget=forms.TextInput(attrs={'size':'30', 'class':'inputText'}))
 
     class Meta:
         model = Dish
-        fields = ('dish_name', 'dish_price',)
+        fields = ('dish_number', 'dish_name', 'dish_price',)
 
     def add_dish(self, menu):
+        dish_number = self.cleaned_data['dish_number']
         dish_name = self.cleaned_data['dish_name']
         dish_price = self.cleaned_data['dish_price']
 
         try:
-            dish_object = Dish.objects.get(name=dish_name, price=dish_price, menu=menu)
+            dish_object = Dish.objects.get(name=dish_name, price=dish_price, num=dish_number, menu=menu, restaurant=menu.restaurant)
         except:
-            dish_object = Dish.objects.create(name=dish_name, price=dish_price, menu=menu)
+            dish_object = Dish.objects.create(name=dish_name, price=dish_price, menu=menu, num=dish_number, restaurant=menu.restaurant)
 
         return dish_object
 

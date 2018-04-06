@@ -9,7 +9,9 @@ from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
 from twilio.twiml.messaging_response import MessagingResponse
 from django.conf import settings
-
+import datetime
+from django.utils import timezone
+import pytz
 
 def search(request):
     errors = []
@@ -106,6 +108,8 @@ def sms(request):
     income_number = request.POST.get('From')
     restaurant_number = request.POST.get('To')
     restaurant_requested = Canteen.objects.get(phone_number=restaurant_number)
+    now = timezone.now() - datetime.timedelta(hours=7)
+    border = now.replace(hour=2, minute=0, second=0, microsecond=0)
 
     try: 
         conversation = Conversation.objects.get(customer_phoneNum = income_number, restaurant_phoneNum=restaurant_number)
@@ -116,39 +120,80 @@ def sms(request):
 
     order = conversation.get_order()
 
+    if now < border:
+        menuType = 'noon'
+    else:
+        menuType = 'dinner'
+    menu_requested = Menu.objects.get(menu_type = menuType, restaurant=restaurant_requested)
+
+
     if 'add' in content and '#' in content:
         new_dish_num = int(content[-1])
-        new_dish = Dish.objects.get(id = new_dish_num)
-        conversation.total_money = conversation.total_money + new_dish.price
-        order.append(new_dish.name)
-        conversation.set_order(order)
-        conversation.save()     # database would not be updated with .save()!
-        mes_content = "You have successfully added it!" + " You have ordered " + str(order) + " from " + str(conversation.restaurant) + ". Total: $" + str(conversation.total_money)
-        msg = resp.message(mes_content)
-        return HttpResponse(str(resp))
+        try:
+            new_dish = Dish.objects.get(num=new_dish_num, menu=menu_requested)
+            conversation.total_money = conversation.total_money + new_dish.price
+            order.append(new_dish.name)
+            conversation.set_order(order)
+            conversation.save()     # database would not be updated with .save()!
+            mes_content = "You have successfully added it!" + " You have ordered " + str(order) + " from " + str(conversation.restaurant) + ". Total: $" + "%.2f" % conversation.total_money + ". To remove, just type 'remove #" + str(new_dish_num) + "'" 
+            msg = resp.message(mes_content)
+            return HttpResponse(str(resp))
+        except:
+            mes_content = "Please text a valid dish number!" 
+            msg = resp.message(mes_content)
+            return HttpResponse(str(resp))
     
     if 'remove' in content and '#' in content:
         new_dish_num = int(content[-1])
-        new_dish = Dish.objects.get(id = new_dish_num)
-        conversation.total_money = conversation.total_money - new_dish.price
-        order.remove(new_dish.name)
-        conversation.set_order(order)
-        conversation.save()
-        mes_content = "You have successfully removed it!" + " You have ordered " + str(order) + " from " + str(conversation.restaurant) + ". Total: $" + str(conversation.total_money)
-        msg = resp.message(mes_content)
-        return HttpResponse(str(resp))
+        try:
+            new_dish = Dish.objects.get(num=new_dish_num, menu=menu_requested)
+            conversation.total_money = conversation.total_money - new_dish.price
+            order.remove(new_dish.name)
+            conversation.set_order(order)
+            conversation.save()
+            mes_content = "You have successfully removed it!" + " You have ordered " + str(order) + " from " + str(conversation.restaurant) + ". Total: $" + "%.2f" % conversation.total_money
+            msg = resp.message(mes_content)
+            return HttpResponse(str(resp))
+        except:
+            mes_content = "Please text a valid dish number!" 
+            msg = resp.message(mes_content)
+            return HttpResponse(str(resp))
 
     if 'check out' in content:
-        mes_content = "Awesome, your total is " + str(conversation.total_money) + ". Please pay via this link:+link" 
+        mes_content = "Awesome, your total is " + "%.2f" % conversation.total_money + ". Please pay via this link:+link" 
         msg = resp.message(mes_content)
         conversation.last_message = 'check out'
         conversation.save()
         return HttpResponse(str(resp))
 
     if conversation.last_message == 'check out':
-        conversation.delete()
+        mes_content = "Thank you for paying, please give us your address for delivery. What is your street address:"
+        msg = resp.message(mes_content)
+        conversation.last_message = 'street address received'
+        conversation.save()
+        return HttpResponse(str(resp))
 
-    res_menu_link = 'https://mygoodcanteen/restaurant/' + str(restaurant_requested.id)
-    msg = resp.message("Hi, thank you for texting " + str(restaurant_requested.name) + ". Here is a link to our menu: " + res_menu_link + ". Please order by texting back the orders you want, like 'add #1'. When you are finished, just text us 'check out'.")
+    if conversation.last_message == 'street address received':
+        mes_content = "What is your city:"
+        msg = resp.message(mes_content)
+        conversation.last_message = 'city received'
+        conversation.save()
+        return HttpResponse(str(resp))
+
+    if conversation.last_message == 'city received':
+        mes_content = "What is your state:"
+        msg = resp.message(mes_content)
+        conversation.last_message = 'state received'
+        conversation.save()
+        return HttpResponse(str(resp))
+
+    if conversation.last_message == 'state received':
+        mes_content = "Thank you, your delivery order is submitted"
+        msg = resp.message(mes_content)
+        conversation.delete()
+        return HttpResponse(str(resp))
+        
+    menu_link = 'https://mygoodcanteen/menu/' + str(menu_requested.id)
+    msg = resp.message("Hi, thank you for texting " + str(restaurant_requested.name) + ". Here is a link to our "+ menuType + " menu:" + menu_link + ". Please order by texting back the orders you want, like 'add #1'. When you are finished, just text us 'check out'.")
     return HttpResponse(str(resp))
 

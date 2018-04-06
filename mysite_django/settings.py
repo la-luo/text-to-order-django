@@ -125,3 +125,4 @@ STATIC_URL = '/static/'
 
 # url to redirect after successfull login
 LOGIN_REDIRECT_URL = '/account'
+LOGOUT_REDIRECT_URL = '/search'

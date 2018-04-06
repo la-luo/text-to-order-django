@@ -27,6 +27,7 @@ class Menu(models.Model):
     info = models.CharField(max_length = 200)
     last_updated = models.DateTimeField(auto_now_add=True)
     restaurant = models.ForeignKey(Canteen)
+    menu_type = models.CharField(max_length=10, null=True)
 
     def __str__(self):
         return self.name
@@ -38,9 +39,11 @@ class Menu(models.Model):
 
 class Dish(models.Model):
     id = models.IntegerField(primary_key=True)
+    num = models.CharField(max_length=10, null=True)
     name = models.CharField(max_length=100)
     price = models.FloatField(null=True)
     menu = models.ForeignKey(Menu, null=True)
+    restaurant = models.ForeignKey(Canteen, null=True)
     nums_stars = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
