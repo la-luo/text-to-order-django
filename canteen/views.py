@@ -193,7 +193,7 @@ def sms(request):
         conversation.delete()
         return HttpResponse(str(resp))
         
-    menu_link = 'https://mygoodcanteen/menu/' + str(menu_requested.id)
+    menu_link = 'http://167.99.161.247:8000/menu/' + str(menu_requested.id)
     msg = resp.message("Hi, thank you for texting " + str(restaurant_requested.name) + ". Here is a link to our "+ menuType + " menu:" + menu_link + ". Please order by texting back the orders you want, like 'add #1'. When you are finished, just text us 'check out'.")
     return HttpResponse(str(resp))
 

@@ -4,27 +4,117 @@
         <title>My Good Canteen - Search Result</title>    
 
         {% load static %}
-        <link rel="stylesheet" href="{% static 'canteen/bulma-0.2.3/css/bulma.css' %}" />
+        <link rel="stylesheet" href="{% static 'canteen/bulma/css/bulma.css' %}" />
         <link rel="stylesheet" href="{% static 'canteen/font-awesome-4.7.0/css/font-awesome.min.css' %}" /> 
 
     </head>     
 
-    <body>       
-        <p>You searched for: <strong>{{ query }}</strong></p>
-   
-        {% if canteen %}           
-            <p>Found {{ canteen|length }} canteen {{ canteen|pluralize }}.</p> 
+    <body> 
+    <section class="hero is-warning">
+    <!-- Hero header: will stick at the top -->
+    <div class="hero-head">
+      <header class="nav">
+        <div class="container">
+          <div class="nav-item">
+            <a class="title" href="{% url "home_view" %}">
+              <strong>My Restaurant</strong>
+            </a>
+          </div>
+          <span class="nav-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+          <div class="nav-right nav-menu">
+            <span class="nav-item">
+              <a class="button is-dark" href="{% url "login" %}">
+                <i class="fa fa-home"></i>
+                <span>&nbsp;Log in</span>
+              </a>
+              <a class="button is-dark" href="{% url "signup" %}">
+                <i class="fa fa-user"></i>
+                <span>&nbsp;Sign up</span>
+              </a>
+            </span>
+          </div>
+        </div>
+      </header>
+    </div>
+
+    <!-- Hero content: will be in the middle -->
+    <div class="hero-body">
+      <div class="container has-text-centered">
+        <h1 class="title is-1">
+          <strong>Get Food Orders from SMS </strong>
+        </h1>
+        <h2 class="subtitle">
+          Booster Your Business!
+        </h2>
+      </div>
+    </div>
+
+        <!-- Hero footer: will stick at the bottom -->
+    <div class="hero-foot">
+      <nav class="tabs">
+        <div class="container">
+          <div class="nav-item">
+      {% if errors %}
+        <ul>
+          {% for error in errors %}
+            <li> {{ error }} </li> 
+          {% endfor %} 
+        </ul>
+      {% endif %} 
+         
+         <form action="" method="get">
+            <input class="input"  type="text" name="q">
+            <input type="submit" value="Search" class="button is-dark" style="padding-left:5px; margin-left:5px"; background-color:#FF3860">
+         </form>
+          </div>
+        </div>
+      </nav>
+    </div>
+
+  </section>      
+
+<div class="container">
+    <br>
+    <h1 class="title is-5">
+        <p><strong>You searched for: {{ query }}</strong></p>
+    </h1>   
+        {% if canteen %}   
+        <h1 class="title is-5">        
+            <p><strong>Found {{ canteen|length }} canteen{{ canteen|pluralize }}:</strong></p> 
+         </h1>
             <ul>               
-                {% for c in canteen %}               
-                <h2>{{ c.name }}</h2>  
-                    <li> Name &emsp; Price &emsp; Review(0-5)</li>
-                    {% for d in c.dish_set.all %}
-                         <li>{{ d.name }} &emsp; {{ d.price }} &emsp; {{ d.nums_stars }}  </li>
-                    {% endfor %}   
+                {% for each in canteen %}               
+            <div class="tile is-parent">
+                <a class="tile box is-child" href="{% url "restaurant" each.id %}">
+                    <div class="columns">
+                        <div class="column is-2">
+                            <figure class="image is-64x64 is-left">
+                                <img src="https://bulma.io/images/placeholders/128x128.png" alt="Image">
+                            </figure>
+                        </div>
+                        <div class="column">
+                            <div class="content">
+                                <p>
+                                    <strong>{{ each.name }} </strong>
+                                    <br> Review: {{ each.nums_stars }}/5
+                                    <br> Address: {{ each.address }}
+                                    <br> Phone Number: {{ each.phone_number }}
+                                </p>
+
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div> 
                 {% endfor %}           
             </ul>       
         {% else %}           
             <p>No restaurant matched your search criteria.</p>       
         {% endif %}     
+    </div>
     </body>
 </html>

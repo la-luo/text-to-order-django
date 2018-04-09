@@ -3,7 +3,7 @@ from django.conf.urls import url, include
 from canteen import views
 
 urlpatterns = [
-    url(r'^search/$', views.search, name='home_view'),
+    url(r'^$', views.search, name='home_view'),
     url(r'^restaurant/(?P<res_id>\d+)/$',views.restaurant, name='restaurant'),
     url(r'^menu/(?P<menu_ID>\d+)/$', views.menu, name='menu_view'),
     url(r'^signup/$', views.signup, name='signup'),

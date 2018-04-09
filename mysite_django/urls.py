@@ -20,11 +20,6 @@ from mysite_django.view import hello, my_home_view, current_datetime, hours_ahea
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', my_home_view),
-    url(r'^hello/$', hello),
-    url(r'^time/$', current_datetime),
-    url(r'^time/plus/(\d{1,2})/$', hours_ahead),
-    url(r'^contact/$', contact),
     url(r'^', include('canteen.urls')),
 ]
 
