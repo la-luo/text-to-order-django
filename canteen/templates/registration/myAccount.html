@@ -58,7 +58,7 @@
     <div class="columns">
       <div class="column">
          <h3 class="title is-4">
-            <strong> You have {{ restaurant_list|length }} restaurant(s).</strong>
+            <strong> You have {{ restaurant_list|length }} restaurant{{ restaurant_list|pluralize }}.</strong>
           </h3>
       </div>
     </div>
@@ -95,7 +95,7 @@
       <div class="column">
          <div class="content">
           <div class="title is-5">
-            <strong> {{ each.name }} menu(s):</strong>
+            <strong> {{ each.name }} menu{{ each.get_menu|pluralize }}:</strong>
           </div>
             {% for each_menu in each.get_menu %}
               <div class="columns">
