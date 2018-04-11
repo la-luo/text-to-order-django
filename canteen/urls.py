@@ -6,6 +6,7 @@ urlpatterns = [
     url(r'^$', views.search, name='home_view'),
     url(r'^restaurant/(?P<res_id>\d+)/$',views.restaurant, name='restaurant'),
     url(r'^menu/(?P<menu_ID>\d+)/$', views.menu, name='menu_view'),
+    url(r'^menu-mobile/(?P<menu_ID>\d+)/$', views.menu_mobile),
     url(r'^signup/$', views.signup, name='signup'),
     url(r'^account/$', views.account),
     url(r'^account/edit_menu/(?P<menu_id>\d+)/$', views.edit_menu, name='edit_menu_view'),

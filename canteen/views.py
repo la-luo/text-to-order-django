@@ -44,6 +44,15 @@ def menu(request, menu_ID):
     dish_list = Dish.objects.filter(menu_id=idx)
     return render(request, 'canteen/menu.html', {'canteen': menu.restaurant,'menu': menu, 'dish_list': dish_list})
 
+def menu_mobile(request, menu_ID):
+    try:
+        idx = int(menu_ID)
+        menu = Menu.objects.get(id = idx)
+    except ValueError:
+        raise Http404()
+    dish_list = Dish.objects.filter(menu_id=idx)
+    return render(request, 'canteen/menu_mobile.html', {'canteen': menu.restaurant,'menu': menu, 'dish_list': dish_list})
+
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -193,7 +202,7 @@ def sms(request):
         conversation.delete()
         return HttpResponse(str(resp))
         
-    menu_link = 'http://167.99.161.247:8000/menu/' + str(menu_requested.id)
+    menu_link = 'http://167.99.161.247:8000/menu-mobile/' + str(menu_requested.id)
     msg = resp.message("Hi, thank you for texting " + str(restaurant_requested.name) + ". Here is a link to our "+ menuType + " menu:" + menu_link + ". Please order by texting back the orders you want, like 'add #1'. When you are finished, just text us 'check out'.")
     return HttpResponse(str(resp))
 

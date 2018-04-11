@@ -37,14 +37,14 @@
 
     <div class="hero-body">
       <div class="container has-text-centered">
-        <h1 class="title is-1">
+        <p class="title is-1">
        	{% if menu %} 
           <strong>{{ menu.name }}</strong>
-          <div class="subtitle">
+          <div class="subtitle is-3">
             <br>{{ menu.info }}
           </div>
          {% endif %} 
-        </h1>
+        </p>
         <h2 class="subtitle">
         </h2>
       </div>
@@ -53,25 +53,35 @@
        
   <div class="container">
     <div class="column is-narrow"></div>
-
+    <!--
+  <table>
+    <thead>
+      <tr>
+        <th>Number</th>
+        <th>Name</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for each in dish_list %}
+      <tr>
+        <td>{{ each.num }}</td>
+        <td>{{ each.name }}</td>
+        <td>{{ each.price }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+-->
        {% for each in dish_list %}
-           {% if forloop.counter0|divisibleby:2 %}
-           		<div class="columns is-mobile">
-           {% endif %}
-   				<div class="column is-half is-mobile">
    					<div class="box"> 
-                  <p class="title is-5">#<strong>{{ each.num }}&nbsp;&nbsp;{{ each.name }}</strong></p>
-      					  <p class="subtitle is-6">
+                  <p class="title is-2">#<strong>{{ each.num }}&nbsp;&nbsp;{{ each.name }}</strong></p>
+      					  <p class="subtitle is-3">
       					  	Price: ${{ each.price }}   
       					  	<br>
       					    Review: {{ each.nums_stars }}/5</p>
-   				  </div>   	
-   				</div>
-   			{% if not forloop.counter0|divisibleby:2 %}
-   			 	</div>
-    		{% endif %}
+   			 	  </div>
        {% endfor %}
-	</div> 
 	</div>
 
 </body>
