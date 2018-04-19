@@ -50,9 +50,10 @@ class Dish(models.Model):
     	return self.name
 
     class Meta:
-        ordering = ['-nums_stars']
+        ordering = ['id']
 
 class Conversation(models.Model):
+    id = models.IntegerField(primary_key=True)
     customer_phoneNum = models.CharField(max_length=15)
     restaurant_phoneNum = models.CharField(max_length=15, null=True)
     order = models.CharField(max_length=200,  default='[]')

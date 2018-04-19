@@ -12,6 +12,7 @@ from django.conf import settings
 import datetime
 from django.utils import timezone
 import pytz
+import re
 
 def search(request):
     errors = []
@@ -111,6 +112,12 @@ def delete_dish(request,dish_id =None):
     menu_id = menu.id
     return redirect(edit_menu, menu_id= menu_id)
 
+def payment(request, conversation_id):
+    conversation = Conversation.objects.get(id = conversation_id)
+    total_money = conversation.total_money * 100
+    data = {'restaurant_name': conversation.restaurant, 'total_money': total_money}
+    return render(request, 'canteen/payment.html', data)
+
 @csrf_exempt
 def sms(request):
     content = request.POST.get('Body', '')
@@ -135,16 +142,22 @@ def sms(request):
         menuType = 'dinner'
     menu_requested = Menu.objects.get(menu_type = menuType, restaurant=restaurant_requested)
 
+    add_pattern = re.compile('[Aa]dd(\s)#')
 
-    if 'add' in content and '#' in content:
-        new_dish_num = int(content[-1])
+    if add_pattern.match(content) != None:
+        p = re.compile('\d+')
+        new_dish_num = int(p.findall(content)[0])
         try:
             new_dish = Dish.objects.get(num=new_dish_num, menu=menu_requested)
             conversation.total_money = conversation.total_money + new_dish.price
             order.append(new_dish.name)
             conversation.set_order(order)
             conversation.save()     # database would not be updated with .save()!
-            mes_content = "You have successfully added it!" + " You have ordered " + str(order) + " from " + str(conversation.restaurant) + ". Total: $" + "%.2f" % conversation.total_money + ". To remove, just type 'remove #" + str(new_dish_num) + "'" 
+            ordered_list = ''
+            for each in order:
+                ordered_list += each + ', '
+            ordered_list = ordered_list.strip(', ')
+            mes_content = "You have successfully added it!" + " You have ordered " + ordered_list + " from " + str(conversation.restaurant) + ". Total: $" + "%.2f" % conversation.total_money + ". To remove, just type 'remove #" + str(new_dish_num) + "'" 
             msg = resp.message(mes_content)
             return HttpResponse(str(resp))
         except:
@@ -152,15 +165,21 @@ def sms(request):
             msg = resp.message(mes_content)
             return HttpResponse(str(resp))
     
-    if 'remove' in content and '#' in content:
-        new_dish_num = int(content[-1])
+    remove_pattern = re.compile('[Rr]emove(\s)#')
+    if remove_pattern.match(content) != None:
+        p = re.compile('\d+')
+        new_dish_num = int(p.findall(content)[0])
         try:
             new_dish = Dish.objects.get(num=new_dish_num, menu=menu_requested)
             conversation.total_money = conversation.total_money - new_dish.price
             order.remove(new_dish.name)
             conversation.set_order(order)
             conversation.save()
-            mes_content = "You have successfully removed it!" + " You have ordered " + str(order) + " from " + str(conversation.restaurant) + ". Total: $" + "%.2f" % conversation.total_money
+            ordered_list = ''
+            for each in order:
+                ordered_list += each + ', '
+            ordered_list = ordered_list.strip(', ')
+            mes_content = "You have successfully removed it!" + " You have ordered " + ordered_list + " from " + str(conversation.restaurant) + ". Total: $" + "%.2f" % conversation.total_money
             msg = resp.message(mes_content)
             return HttpResponse(str(resp))
         except:
@@ -168,8 +187,10 @@ def sms(request):
             msg = resp.message(mes_content)
             return HttpResponse(str(resp))
 
-    if 'check out' in content:
-        mes_content = "Awesome, your total is " + "%.2f" % conversation.total_money + ". Please pay via this link:+link" 
+    check_pattern = re.compile('[Cc]heck')
+    if check_pattern.match(content) != None:
+        link = "http://167.99.161.247:8000/payment/" + str(conversation.id)
+        mes_content = "Awesome, your total is " + "%.2f" % conversation.total_money + ". Please pay via this link: " + link + ' Type anything to inform us when you finish.'
         msg = resp.message(mes_content)
         conversation.last_message = 'check out'
         conversation.save()
