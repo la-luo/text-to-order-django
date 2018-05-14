@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from canteen.models import Canteen, Dish, Menu, Conversation
-from django.contrib.auth import authenticate, login
-from canteen.forms import SignUpForm, menuForm
+from django.contrib.auth import authenticate, login, logout
+from canteen.forms import SignUpForm, menuForm, resForm
 from django.contrib.auth.models import Permission, Group
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -13,6 +13,8 @@ import datetime
 from django.utils import timezone
 import pytz
 import re
+import stripe
+import json
 
 def search(request):
     errors = []
@@ -54,13 +56,28 @@ def menu_mobile(request, menu_ID):
     dish_list = Dish.objects.filter(menu_id=idx)
     return render(request, 'canteen/menu_mobile.html', {'canteen': menu.restaurant,'menu': menu, 'dish_list': dish_list})
 
+def login_view(request):
+    username = request.POST.get('username', '')
+    password = request.POST.get('password', '')
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+        login(request, user)
+        return redirect(account)
+        # Redirect to a success page.
+        # Return an 'invalid login' error message.
+    return render(request, 'registration/login.html')
+
+def logout_view(request):
+    return render(request, 'registration/logout.html')
+
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
+            email = form.cleaned_data.get('email')
             valid_password = form.clean_password()
-            user = authenticate(username=username, password=valid_password)
+            user = authenticate(username=username, password=valid_password, email=email)
             if user:
                 user = form.save()
                 user.groups.add(Group.objects.get(name='restaurant manager'))
@@ -81,10 +98,32 @@ def account(request):
     for each in restaurant_list:
         menu = Menu.objects.filter(restaurant = each)
         menu_list.append(menu)
-    #data = {'restaurant_list': restaurant_list, 'menu_list': menu_list}
-    data = {'restaurant_list': restaurant_list}
-
+    if request.method == 'POST':
+        form = resForm(request.POST)
+        if form.is_valid():
+            res = form.add_restaurant(user)
+            if res:
+                res = form.save()
+        return HttpResponseRedirect("")
+    else:
+        form = resForm()
+    data = {'restaurant_list': restaurant_list, 'form':form}
     return render(request, 'registration/myAccount.html', data)
+
+def edit_res(request, res_id):
+    res = Canteen.objects.get(id = res_id)
+    if request.method == "POST":
+        newname = request.POST.get('newname', '')
+        newaddress = request.POST.get('newaddress', '')
+        if newname is not '':
+            res.name = newname
+            res.save()
+            return redirect(account)
+        if newaddress is not '':
+            res.address = newaddress
+            res.save()
+            return redirect(account)
+    return redirect(account)
 
 def edit_menu(request, menu_id):
     try:
@@ -95,6 +134,8 @@ def edit_menu(request, menu_id):
     dish_list = Dish.objects.filter(menu=menu)
     if request.method == 'POST':
         form = menuForm(request.POST)
+        form.fill_typechoice(menu)
+        form = menuForm(request.POST)
         if form.is_valid():
             dish = form.add_dish(menu)
             if dish:
@@ -102,14 +143,56 @@ def edit_menu(request, menu_id):
         return HttpResponseRedirect("")
     else:
         form = menuForm()
-    data = {'canteen': menu.restaurant,'menu': menu, 'dish_list': dish_list, 'form': form}
+    dishtype_list = menu.get_list()
+    data = {'canteen': menu.restaurant,'menu': menu, 'dish_list': dish_list, 'form': form, 'dishtype_list': dishtype_list}
     return render(request, 'registration/edit_menu.html', data)
+
+def add_dishtype(request, menu_id):
+    menu = Menu.objects.get(id = menu_id)
+    dishtype_list = menu.get_list()
+    if request.method=="POST":
+        newtype = request.POST.get('newtype', '')
+        if newtype is not '':
+            dishtype_list.append(newtype)
+            menu.set_list(dishtype_list)
+            menu.save()
+    return redirect(edit_menu, menu_id= menu.id)
+
+def delete_dishtype(request, menu_id, dishtype):
+    menu = Menu.objects.get(id = menu_id)
+    dishtype_list = menu.get_list()
+    dishtype_list.remove(dishtype)
+    menu.set_list(dishtype_list)
+    menu.save()
+    return redirect(edit_menu, menu_id= menu.id)
+
+def edit_dish(request, dish_id):
+    dish = Dish.objects.get(id=dish_id)
+    menu = dish.menu
+    if request.method=="POST":
+        newname = request.POST.get('newname', '')
+        newprice = request.POST.get('newprice', '')
+        if newname is not '':
+            dish.name = newname
+            dish.save()
+            return redirect(edit_menu, menu_id= menu.id)
+        if newprice is not '':
+            dish.price = newprice
+            dish.save()
+            return redirect(edit_menu, menu_id= menu.id)
+    return redirect(edit_menu, menu_id= menu.id)
 
 def delete_dish(request,dish_id =None):
     dish = Dish.objects.get(id=dish_id)
-    dish.delete()
     menu = dish.menu
     menu_id = menu.id
+    dish_list = Dish.objects.filter(menu = menu)
+    dish_num = dish.num
+    dish.delete()
+    for each in dish_list:
+        if each.num > dish_num:
+            each.num = each.num - 1
+            each.save()
     return redirect(edit_menu, menu_id= menu_id)
 
 def payment(request, conversation_id):
@@ -117,6 +200,9 @@ def payment(request, conversation_id):
     total_money = conversation.total_money * 100
     data = {'restaurant_name': conversation.restaurant, 'total_money': total_money}
     return render(request, 'canteen/payment.html', data)
+
+def check(request):
+    return render(request, 'canteen/check.html')
 
 @csrf_exempt
 def sms(request):
@@ -141,8 +227,34 @@ def sms(request):
     else:
         menuType = 'dinner'
     menu_requested = Menu.objects.get(menu_type = menuType, restaurant=restaurant_requested)
+    menu_link = 'http://167.99.161.247:8000/menu-mobile/' + str(menu_requested.id)
 
-    add_pattern = re.compile('[Aa]dd(\s)#')
+    if conversation.last_message == None:
+        mes_content = "Hi, thank you for texting " + str(restaurant_requested.name) + ". Please texting us 'd' or 'p' to inform us whether it is for delivery or pickup."
+        msg = resp.message(mes_content)
+        conversation.last_message = 'ask d or p'
+        conversation.save()
+        return HttpResponse(str(resp))
+
+    if conversation.last_message == 'ask d or p':
+        if 'd' in content:
+            mes_content = "You choose delivery! Here is a link to our "+ menuType + " menu:" + menu_link + ". Please order by texting 'Add' with the dish number like 'Add 1', or clicking the button in the menu. When you are finished, just text us 'check out'."
+            msg = resp.message(mes_content)
+            conversation.last_message = 'received d or p'
+            conversation.save()
+            return HttpResponse(str(resp))
+        if 'p' in content:
+            mes_content = "You choose pickup! Here is a link to our "+ menuType + " menu:" + menu_link + ". Please order by texting 'Add' with the dish number like 'Add 1', or clicking the button in the menu. When you are finished, just text us 'check out'."
+            msg = resp.message(mes_content)
+            conversation.delivery = False
+            conversation.last_message = 'received d or p'
+            conversation.save()
+            return HttpResponse(str(resp))
+        mes_content = "Hi, thank you for texting " + str(restaurant_requested.name) + ". Please texting us 'd' or 'p' to inform us whether it is for delivery or pickup."
+        msg = resp.message(mes_content)
+        return HttpResponse(str(resp))
+
+    add_pattern = re.compile('[Aa]dd')
 
     if add_pattern.match(content) != None:
         p = re.compile('\d+')
@@ -157,7 +269,7 @@ def sms(request):
             for each in order:
                 ordered_list += each + ', '
             ordered_list = ordered_list.strip(', ')
-            mes_content = "You have successfully added it!" + " You have ordered " + ordered_list + " from " + str(conversation.restaurant) + ". Total: $" + "%.2f" % conversation.total_money + ". To remove, just type 'remove #" + str(new_dish_num) + "'" 
+            mes_content = "You have successfully added it!" + " You have ordered " + ordered_list + " from " + str(conversation.restaurant) + ". Total: $" + "%.2f" % conversation.total_money + ". To remove, just type 'remove " + str(new_dish_num) + "'" 
             msg = resp.message(mes_content)
             return HttpResponse(str(resp))
         except:
@@ -165,7 +277,7 @@ def sms(request):
             msg = resp.message(mes_content)
             return HttpResponse(str(resp))
     
-    remove_pattern = re.compile('[Rr]emove(\s)#')
+    remove_pattern = re.compile('[Rr]emove')
     if remove_pattern.match(content) != None:
         p = re.compile('\d+')
         new_dish_num = int(p.findall(content)[0])
@@ -223,7 +335,25 @@ def sms(request):
         conversation.delete()
         return HttpResponse(str(resp))
         
-    menu_link = 'http://167.99.161.247:8000/menu-mobile/' + str(menu_requested.id)
-    msg = resp.message("Hi, thank you for texting " + str(restaurant_requested.name) + ". Here is a link to our "+ menuType + " menu:" + menu_link + ". Please order by texting back the orders you want, like 'add #1'. When you are finished, just text us 'check out'.")
+    msg = resp.message("Here is a link to our "+ menuType + " menu:" + menu_link + ". Please order by texting 'Add' with the dish number like 'Add 1', or clicking the button in the menu. When you are finished, just text us 'check out'.")
+    
     return HttpResponse(str(resp))
 
+@csrf_exempt
+def charge(request):
+    stripe.api_key = "sk_test_D31hRGRmIRtbtdd7p8ZQtEtU"
+
+    data = json.loads(request.body)
+    token = data["id"]  #token = data["token"]["id"]
+
+    customer = stripe.Customer.create(
+      source=token,  # source='tok_mastercard',
+      email='paying.user@example.com',
+    )
+
+    charge = stripe.Charge.create(
+      amount=1000,
+      currency='usd',
+      customer=customer.id,
+    )
+    return HttpResponse(str(request.body))

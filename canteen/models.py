@@ -8,7 +8,6 @@ class Canteen(models.Model):
     manager = models.ManyToManyField(User, related_name='manager')
     address = models.CharField(max_length=50)
     phone_number = models.CharField(max_length=12, null=True)
-    nums_stars = models.IntegerField()
 
     def __str__(self):
     	return self.name
@@ -19,7 +18,7 @@ class Canteen(models.Model):
         return menu_list
 
     class Meta:
-    	ordering = ['-nums_stars']
+    	ordering = ['name']
 
 class Menu(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -28,9 +27,16 @@ class Menu(models.Model):
     last_updated = models.DateTimeField(auto_now_add=True)
     restaurant = models.ForeignKey(Canteen)
     menu_type = models.CharField(max_length=10, null=True)
+    dishtype_list = models.CharField(max_length=200, default='["food","drinks"]')
 
     def __str__(self):
         return self.name
+
+    def set_list(self, updated_list):
+        self.dishtype_list = json.dumps(updated_list)
+
+    def get_list(self):
+        return json.loads(self.dishtype_list)
 
     @property
     def get_dish(self):
@@ -39,12 +45,12 @@ class Menu(models.Model):
 
 class Dish(models.Model):
     id = models.IntegerField(primary_key=True)
-    num = models.CharField(max_length=10, null=True)
+    num = models.IntegerField(null=True)
+    dish_type = models.CharField(max_length=10, default='food')
     name = models.CharField(max_length=100)
     price = models.FloatField(null=True)
     menu = models.ForeignKey(Menu, null=True)
     restaurant = models.ForeignKey(Canteen, null=True)
-    nums_stars = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
     	return self.name
@@ -54,6 +60,7 @@ class Dish(models.Model):
 
 class Conversation(models.Model):
     id = models.IntegerField(primary_key=True)
+    delivery = models.BooleanField(default=True)
     customer_phoneNum = models.CharField(max_length=15)
     restaurant_phoneNum = models.CharField(max_length=15, null=True)
     order = models.CharField(max_length=200,  default='[]')
@@ -63,7 +70,6 @@ class Conversation(models.Model):
     city = models.CharField(max_length=20, null=True)
     State = models.CharField(max_length=15, null=True)
     last_message = models.CharField(max_length=30, null=True)
-
 
     def set_order(self, updated_order):
         self.order = json.dumps(updated_order)

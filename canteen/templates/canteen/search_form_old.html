@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>site name - home</title>
+  
+  {% load static %}
+<link rel="stylesheet" href="{% static 'canteen/bulma/css/bulma.css' %}" />
+<link rel="stylesheet" href="{% static 'canteen/font-awesome-4.7.0/css/font-awesome.min.css' %}" />
+
+</head>
+
+<body>
+    <section class="hero is-warning">
+    <!-- Hero header: will stick at the top -->
+    <div class="hero-head">
+      <header class="nav">
+        <div class="container">
+          <div class="nav-item">
+            <a class="title" href="">
+              <strong>My Restaurant</strong>
+            </a>
+          </div>
+          <span class="nav-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+          <div class="nav-right nav-menu">
+            <span class="nav-item">
+              <a class="button is-dark" href="{% url "login" %}">
+                <i class="fa fa-home"></i>
+                <span>&nbsp;Log in</span>
+              </a>
+              <a class="button is-dark" href="{% url "signup" %}">
+                <i class="fa fa-user"></i>
+                <span>&nbsp;Sign up</span>
+              </a>
+            </span>
+          </div>
+        </div>
+      </header>
+    </div>
+
+    <!-- Hero content: will be in the middle -->
+    <div class="hero-body">
+      <div class="container has-text-centered">
+        <h1 class="title is-1">
+          <strong>Get Food Orders from SMS </strong>
+        </h1>
+        <h2 class="subtitle">
+          Booster Your Business!
+        </h2>
+      </div>
+    </div>
+
+        <!-- Hero footer: will stick at the bottom -->
+    <div class="hero-foot">
+      <nav class="tabs">
+        <div class="container">
+          <div class="nav-item">
+      {% if errors %}
+        <ul>
+          {% for error in errors %}
+            <li> {{ error }} </li> 
+          {% endfor %} 
+        </ul>
+      {% endif %} 
+         
+         <form action="" method="get">
+            <input class="input"  type="text" name="q">
+            <input type="submit" value="Search" class="button is-dark" style="padding-left:5px; margin-left:5px"; background-color:#FF3860">
+         </form>
+          </div>
+        </div>
+      </nav>
+    </div>
+
+  </section>
+
+<div class="container">
+    <br>
+
+    <div class="columns">
+        <div class="column">
+
+            {% if all_canteen %} {% for each in all_canteen %}
+
+            <div class="tile is-parent">
+                <a class="tile box is-child" href="{% url "restaurant" each.id %}">
+                    <div class="columns">
+                        <div class="column is-2">
+                            <figure class="image is-64x64 is-left">
+                                <img src="https://bulma.io/images/placeholders/128x128.png" alt="Image">
+                            </figure>
+                        </div>
+                        <div class="column">
+                            <div class="content">
+                                <p>
+                                    <strong>{{ each.name }} </strong>
+                                    <br> Review: {{ each.nums_stars }}/5
+                                    <br> Address: {{ each.address }}
+                                    <br> Phone Number: {{ each.phone_number }}
+                                </p>
+
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %} {% endif %}
+        </div>
+
+        <div class="column">
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

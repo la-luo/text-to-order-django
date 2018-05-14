@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>     
+
+    <head>         
+        <title>My Restaurant - edit menu</title>    
+
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'canteen/bulma/css/bulma.css' %}" />
+        <link rel="stylesheet" href="{% static 'canteen/font-awesome-4.7.0/css/font-awesome.min.css' %}" /> 
+
+    </head>  
+
+ <body> 
+ 	<section class="hero is-warning">
+    <!-- Hero header: will stick at the top -->
+    <div class="hero-head">
+      <header class="nav">
+        <div class="container">
+          <div class="nav-item">
+            <a class="title" href="">
+              <strong>Menu</strong>
+            </a>
+          </div>
+          <span class="nav-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+          <div class="nav-right nav-menu">
+            <span class="nav-item">
+              <a class="button is-dark" href="{% url "logout" %}">
+                <i class="fa fa-user"></i>
+                <span>&nbsp;Log out</span>
+              </a>
+            </span>
+          </div>
+        </div>
+      </header>
+    </div>
+
+    <div class="hero-body">
+      <div class="container has-text-centered">
+        <h1 class="title is-1">
+       	{% if menu %} 
+          <strong>{{ menu.name }}</strong>
+          <div class="subtitle">
+            <br>{{ menu.info }}
+          </div>
+         {% endif %} 
+        </h1>
+        <h2 class="subtitle">
+        </h2>
+      </div>
+    </div>
+      </section>
+    
+  <div class="container">
+
+    <div class="column is-narrow"></div>
+       {% for each in dish_list %}
+           {% if forloop.counter0|divisibleby:2 %}
+           		<div class="columns">
+           {% endif %}
+   				<div class="column is-half">
+   					<div class="box"> 
+   				          <p class="title is-5"><strong>#{{ each.num }}&nbsp;&nbsp;{{ each.name }}</strong></p>
+      					  <p class="subtitle is-6">
+      					  	Price: ${{ each.price }}   
+      					  	<br>
+      					    Review: {{ each.nums_stars }}/5
+      					  </p>
+      					  <br><a href="{% url "delete_dish_view" each.id %}"><span class="icon is-medium"><i class="fa fa-trash"></i></span></a>
+   				  </div>   	
+   				</div>
+   			{% if not forloop.counter0|divisibleby:2 %}
+   			 	</div>
+    		{% endif %}
+       {% endfor %}
+   </div> 
+<br>
+<br>
+
+   <div class="container">
+<div class="notification is-warning">
+ <strong>Add New Dish To My Menu </strong>
+</div>
+  <form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+      <p>
+        <div class="field">
+        <label class="label">{{ field.label_tag }}</label>
+        <div class="control">
+          {{ field }}
+        {% if field.help_text %}
+          <small style="color: grey">{{ field.help_text }}</small>
+        {% endif %}
+        {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
+        {% endfor %}
+        </div>
+        </div>
+        <br>
+      </p>
+    {% endfor %}
+    <br>
+    <input class="button is-warning" type="submit" value="Add dish">
+  </form>
+</div>
+
+ </div>
+ </body>
+
+</html>
+

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="https://js.stripe.com/v3/"></script>
+<link rel='stylesheet' type='text/css' href="https://stripe.github.io/elements-examples/css/base.css">
+
+</head>
+
+<body>
+ {{ info }}
+<!-- <script type="text/javascript">
+var xhr = new XMLHttpRequest();
+// we defined the xhr
+
+xhr.onreadystatechange = function () {
+    if (this.readyState != 4) return;
+
+    if (this.status == 200) {
+        var data = JSON.parse(this.responseText);
+        alert(JSON.stringify(this.responseText));
+        // we get the returned data
+    }
+
+    // end of state change: it can be after some time (async)
+};
+
+xhr.open('GET', "http://127.0.0.1:8000/charge/", true);
+xhr.send();
+</script> -->
+</body>

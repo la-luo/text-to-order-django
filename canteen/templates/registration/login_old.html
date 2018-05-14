@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>My Restaurant - Log In</title>
+  
+  {% load static %}
+<link rel="stylesheet" href="{% static 'canteen/bulma/css/bulma.css' %}" />
+<link rel="stylesheet" href="{% static 'canteen/font-awesome-4.7.0/css/font-awesome.min.css' %}" />
+
+</head>
+
+<body>
+    <section class="hero is-primary is-medium is-bold is-warning">
+    <!-- Hero header: will stick at the top -->
+    <div class="hero-head">
+      <header class="nav">
+        <div class="container">
+          <div class="nav-item">
+            <a class="title" href="{% url "home_view" %}">
+              <strong>My Restaurant</strong>
+            </a>
+          </div>
+          <span class="nav-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+          <div class="nav-right nav-menu">
+            <span class="nav-item">
+              <a class="button is-dark" >
+                <i class="fa fa-home"></i>
+                <span>&nbsp;Log in</span>
+              </a>
+              <a class="button is-dark" href="#">
+                <i class="fa fa-user"></i>
+                <span>&nbsp;Sign up</span>
+              </a>
+            </span>
+          </div>
+        </div>
+      </header>
+    </div>
+
+    <!-- Hero content: will be in the middle -->
+    <div class="hero-body">
+      <div class="container">
+        <h2 class="title is-2">
+          Welcome Back!
+        </h2>
+        <h1 class="title is-1">
+          <strong>Sign In To Your Account</strong>
+        </h1>
+
+      </div>
+    </div>
+ </section>
+
+<div class="section">
+<div class="container">
+  <form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+      <p>
+        <div class="field">
+        <label class="label">{{ field.label_tag }}</label>
+        <div class="control">
+          {{ field }}
+        {% if field.help_text %}
+          <small style="color: grey">{{ field.help_text }}</small>
+        {% endif %}
+        {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
+        {% endfor %}
+        </div>
+        </div>
+        <br>
+      </p>
+    {% endfor %}
+    <br>
+    <input class="button is-warning" type="submit" value="Log in">
+  </form>
+</div>
+</div>
+</body>
+</html>

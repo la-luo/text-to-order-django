@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>     
+
+    <head>         
+        <title>My Restaurant - menu</title>    
+
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'canteen/bulma/css/bulma.css' %}" />
+        <link rel="stylesheet" href="{% static 'canteen/font-awesome-4.7.0/css/font-awesome.min.css' %}" /> 
+
+    </head>  
+
+    <body> 
+    <section class="hero is-warning">
+    <!-- Hero header: will stick at the top -->
+    <div class="hero-head">
+      <header class="nav">
+        <div class="container">
+          <div class="nav-item">
+            <a class="title" href="">
+              <strong>Menu</strong>
+            </a>
+          </div>
+          <span class="nav-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+          <div class="nav-right nav-menu">
+            <span class="nav-item">
+
+            </span>
+          </div>
+        </div>
+      </header>
+    </div>
+
+    <div class="hero-body">
+      <div class="container has-text-centered">
+        <p class="title is-1">
+       	{% if menu %} 
+          <strong>{{ menu.name }}</strong>
+          <div class="subtitle is-3">
+            <br>{{ menu.info }}
+          </div>
+         {% endif %} 
+        </p>
+        <h2 class="subtitle">
+        </h2>
+      </div>
+    </div>
+      </section>
+       
+  <div class="container">
+    <div class="column is-narrow"></div>
+    <!--
+  <table>
+    <thead>
+      <tr>
+        <th>Number</th>
+        <th>Name</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for each in dish_list %}
+      <tr>
+        <td>{{ each.num }}</td>
+        <td>{{ each.name }}</td>
+        <td>{{ each.price }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+-->
+       {% for each in dish_list %}
+   					<div class="box"> 
+                  <p class="title is-2">#<strong>{{ each.num }}&nbsp;&nbsp;{{ each.name }}</strong></p>
+      					  <p class="subtitle is-3">
+      					  	Price: ${{ each.price }}   
+      					  	<br>
+      					    Review: {{ each.nums_stars }}/5</p>
+                    <br>
+                    <a href="sms:12175744192;?&body=Add #{{each.num}}">Send an SMS</a>
+   			 	  </div>
+       {% endfor %}
+	</div>
+
+</body>
+
+
+</html>

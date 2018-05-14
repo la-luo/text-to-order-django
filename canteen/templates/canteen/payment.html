@@ -20,7 +20,13 @@
     token: function(token) {
       // You can access the token ID with `token.id`.
       // Get the token ID to your server-side code for use.
-        }
+        // alert(JSON.stringify(token));
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://127.0.0.1:8000/charge/", true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify({
+            "token":token
+          }
     });
 
     var restaurant_name = "{{restaurant_name}}";

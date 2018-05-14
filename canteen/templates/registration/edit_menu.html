@@ -1,115 +1,215 @@
-<!DOCTYPE html>
-<html>     
-
-    <head>         
-        <title>My Restaurant - edit menu</title>    
-
-        {% load static %}
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>site name - edit menu</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Site Description Here">
+         {% load static %}
         <link rel="stylesheet" href="{% static 'canteen/bulma/css/bulma.css' %}" />
-        <link rel="stylesheet" href="{% static 'canteen/font-awesome-4.7.0/css/font-awesome.min.css' %}" /> 
+        <link href="{% static 'canteen/css/bootstrap.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/stack-interface.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/socicon.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/lightbox.min.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/flickity.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/iconsmind.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/jquery.steps.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/theme.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/custom.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/font-frankruhl-firasans.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:200,300,400,400i,500,600,700%7CMerriweather:300,300i" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,400i,500,700%7CFrank+Ruhl+Libre:300,400" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    </head>
 
-    </head>  
+    <body>
+        <a id="start"></a>
+        <nav id="menu2" class="bar bar-2 hidden-xs bar--absolute">
+                <div class="container">
+                    <div class="col-xs-3">
+                        <div class="bar__module">
+                            <a href="{% url "home_view" %}">Home</a> > <a href="{% url "account" %}">My account</a> > <a href="">Edit menu</a>
+                        </div>
+                    </div>
+                    <!--end of row-->
+                    <div class="col-md-12 text-right text-left-xs text-left-sm">
+                        <div class="bar__module">
+                            <a class="btn btn--sm btn--primary type--uppercase" href="{% url "logout" %}">
+                                <span class="btn__text">
+                                        &nbsp;Log out
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+        </nav>
+                <section class="cover imagebg height-20" data-overlay="3">
+                    <div class="background-image-holder">
+                        <img alt="background" src="{% static 'canteen/img/account.jpg' %}" />
+                    </div>
+                </section>
+            <div class="container">
+              <br>
+                        {% if menu %} 
+                           <p class="h2">
+                                {{ menu.restaurant }} | {{ menu.name }} 
+                           </p>
+                            <p class="lead">
+                                {{ menu.info }}
+                            </p>
 
- <body> 
- 	<section class="hero is-warning">
-    <!-- Hero header: will stick at the top -->
-    <div class="hero-head">
-      <header class="nav">
-        <div class="container">
-          <div class="nav-item">
-            <a class="title" href="">
-              <strong>Menu</strong>
-            </a>
-          </div>
-          <span class="nav-toggle">
-            <span></span>
-            <span></span>
-            <span></span>
-          </span>
-          <div class="nav-right nav-menu">
-            <span class="nav-item">
-              <a class="button is-dark" href="{% url "logout" %}">
-                <i class="fa fa-user"></i>
-                <span>&nbsp;Log out</span>
-              </a>
-            </span>
-          </div>
-        </div>
-      </header>
-    </div>
+                        {% endif %}
+            </div>
+            <div class="container">
+                <br>
+                <div class="field is-grouped is-grouped-multiline">
+                    {% for each in dishtype_list %}
+                    <span class="tag is-warning is-medium">
+                      {{ each }}
+                      <a href="/delete-dishtype/{{ menu.id }}/{{ each }}/"><button class="delete is-small"></button></a>
+                    </span>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="container">
+                <br>
+                      <form action="/add-dishtype/{{ menu.id }}/" method="post">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <input type="text" name="newtype" placeholder="New dish type" />
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button class="btn btn--primary type--uppercase" type="submit">Add this type</button>
+                                    </div>
+                                </div>
+                      </form>
+            </div>
 
-    <div class="hero-body">
-      <div class="container has-text-centered">
-        <h1 class="title is-1">
-       	{% if menu %} 
-          <strong>{{ menu.name }}</strong>
-          <div class="subtitle">
-            <br>{{ menu.info }}
-          </div>
-         {% endif %} 
-        </h1>
-        <h2 class="subtitle">
-        </h2>
-      </div>
-    </div>
-      </section>
-    
   <div class="container">
-
     <div class="column is-narrow"></div>
        {% for each in dish_list %}
            {% if forloop.counter0|divisibleby:2 %}
-           		<div class="columns">
+                <div class="columns">
            {% endif %}
-   				<div class="column is-half">
-   					<div class="box"> 
-   				          <p class="title is-5"><strong>#{{ each.num }}&nbsp;&nbsp;{{ each.name }}</strong></p>
-      					  <p class="subtitle is-6">
-      					  	Price: ${{ each.price }}   
-      					  	<br>
-      					    Review: {{ each.nums_stars }}/5
-      					  </p>
-      					  <br><a href="{% url "delete_dish_view" each.id %}"><span class="icon is-medium"><i class="fa fa-trash"></i></span></a>
-   				  </div>   	
-   				</div>
-   			{% if not forloop.counter0|divisibleby:2 %}
-   			 	</div>
-    		{% endif %}
+                <div class="column is-half">
+                    <div class="box"> 
+                          <p class="title is-5"><strong>#{{ each.num }}&nbsp;&nbsp;{{ each.name }}</strong></p>
+                        <form action="/edit-dish/{{ each.id }}/" method="post">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <input type="text" name="newname" placeholder="New Dish Name" />
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <button class="btn btn--primary type--uppercase" type="submit">Update</button>
+                                    </div>
+                                </div>
+                      </form>
+                          <p class="subtitle is-6">
+                            <br>
+                            Price: ${{ each.price }}   
+                      <form action="/edit-dish/{{ each.id }}/" method="post"> 
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <input type="text" name="newprice" placeholder="New Price" />
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <button class="btn btn--primary type--uppercase" type="submit">Update</button>                
+                                    </div>
+                                </div>
+                      </form>
+                          </p>
+                          <br><a href="{% url "delete_dish_view" each.id %}">Delete this dish</a>
+                    </div>    
+                </div>
+            {% if not forloop.counter0|divisibleby:2 %}
+                </div>
+            {% endif %}
        {% endfor %}
-   </div> 
-<br>
-<br>
-
+  </div> 
+<section>
    <div class="container">
-<div class="notification is-warning">
- <strong>Add New Dish To My Menu </strong>
-</div>
-  <form method="post">
-    {% csrf_token %}
-    {% for field in form %}
-      <p>
-        <div class="field">
-        <label class="label">{{ field.label_tag }}</label>
-        <div class="control">
-          {{ field }}
-        {% if field.help_text %}
-          <small style="color: grey">{{ field.help_text }}</small>
-        {% endif %}
-        {% for error in field.errors %}
-          <p style="color: red">{{ error }}</p>
+    <h3>
+     <strong>Add New Dish To My Menu </strong>
+    </h3>
+      <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+          <p>
+            <div class="field">
+            <div class="control">
+              &nbsp;&nbsp;&nbsp;&nbsp;{{ field }}
+            {% if field.help_text %}
+              <small style="color: grey">{{ field.help_text }}</small>
+            {% endif %}
+            {% for error in field.errors %}
+              <p style="color: red">{{ error }}</p>
+            {% endfor %}
+            </div>
+            </div>
+            <br>
+          </p>
         {% endfor %}
-        </div>
-        </div>
         <br>
-      </p>
-    {% endfor %}
-    <br>
-    <input class="button is-warning" type="submit" value="Add dish">
-  </form>
-</div>
-
- </div>
+        <div class="col-xs-6">
+            <button type="submit" class="btn btn--primary type--uppercase">Add this dish</button>
+        </div>
+      </form>
+    </div>
+</section>
+        <footer class="space--sm footer-1 text-center-xs bg--dark ">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <ul class="list-inline list--hover">
+                            <span class="type--fine-print">Copyright&copy;
+                                <span class="update-year"></span> La Luo </span>
+                            </ul>
+                        </div>
+                        <div class="col-sm-6 text-right text-center-xs">
+                            <ul class="social-list list-inline list--hover">
+                                <li>
+                                    <a href="https://github.com/Rola1993">
+                                        <i class="socicon socicon-github icon icon--xs"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://www.linkedin.com/in/la-luo-637b4a94/ ">
+                                        <i class="socicon socicon-linkedin icon icon--xs"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                            <a href="mailto:rola.uiuc@gmail.com?Subject=Hello%20La" class="btn type--uppercase">
+                                <span class="btn__text">
+                                    Contact us
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!--end of container-->
+            </footer>
+        <a class="back-to-top inner-link" href="#start" data-scroll-class="100vh:active">
+            <i class="stack-interface stack-up-open-big"></i>
+        </a>
+        <script src="{% static 'canteen/js/jquery-3.1.1.min.js' %}"></script>
+        <script src="{% static 'canteen/js/flickity.min.js' %}"></script>
+        <script src="{% static 'canteen/js/easypiechart.min.js' %}"></script>
+        <script src="{% static 'canteen/js/parallax.js' %}"></script>
+        <script src="{% static 'canteen/js/typed.min.js' %}"></script>
+        <script src="{% static 'canteen/js/datepicker.js' %}"></script>
+        <script src="{% static 'canteen/js/isotope.min.js' %}"></script>
+        <script src="{% static 'canteen/js/ytplayer.min.js' %}"></script>
+        <script src="{% static 'canteen/js/lightbox.min.js' %}"></script>
+        <script src="{% static 'canteen/js/granim.min.js' %}"></script>
+        <script src="{% static 'canteen/js/jquery.steps.min.js' %}"></script>
+        <script src="{% static 'canteen/js/countdown.min.js' %}"></script>
+        <script src="{% static 'canteen/js/twitterfetcher.min.js' %}"></script>
+        <script src="{% static 'canteen/js/spectragram.min.js' %}"></script>
+        <script src="{% static 'canteen/js/smooth-scroll.min.js' %}"></script>
+        <script src="{% static 'canteen/js/scripts.js' %}"></script>
  </body>
-
 </html>
-
+    

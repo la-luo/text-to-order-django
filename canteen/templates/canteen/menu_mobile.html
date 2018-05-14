@@ -1,90 +1,179 @@
-<!DOCTYPE html>
-<html>     
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>My Restaurant - menu</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Site Description Here">
+         {% load static %}
+        <link href="{% static 'canteen/css/bootstrap.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/stack-interface.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/socicon.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/lightbox.min.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/flickity.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/iconsmind.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/jquery.steps.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/theme.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/custom.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/font-frankruhl-firasans.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:200,300,400,400i,500,600,700%7CMerriweather:300,300i" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,400i,500,700%7CFrank+Ruhl+Libre:300,400" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    </head>
+    <body class=" ">
+        <a id="start"></a>
+        <div class="main-container">
+            <section id="home" class="cover height-150 imagebg parallax" data-overlay="2">
+                <div class="background-image-holder">
+                    <img src="{% static 'canteen/img/restaurant-1.jpg' %}" alt="background"/>
+                </div>
+                <div class="container pos-vertical-center">
+                    <div class="row">
+                        <div class="col-sm-8 col-md-7">
+                            <h1>
+                                {% if menu %} 
+                                  <div class="title is-3">
+                                    <strong>{{ menu.restaurant }}</strong>
+                                    <br>
+                                    <strong>{{ menu.name }}</strong>
+                                  </div>
+                                 {% endif %}
+                                 <br> 
+                                 <br> 
+                                 <br> 
+                            </h1>
 
-    <head>         
-        <title>My Restaurant - menu</title>    
+                        </div>
+                    </div>
+                    <!--end of row-->
+                </div>
+                <!--end of container-->
+            </section>
+            <section id="about" class="space--lg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-10">
+                            <span class="h2">
+                                {{ menu.info }}
+                            </span>
+                            <hr class="short">
+                            <p>
+                                Address: {{ canteen.address }}
+                                <br> 
+                                Call: {{ canteen.phone_number }}
+                            </p>
+                        </div>
+                    </div>
+                    <!--end of row-->
+                </div>
+                <!--end of container-->
+            </section>
+            <section id="services" class="cover height-50 imagebg parallax" data-overlay="3" id="menu">
+                <div class="background-image-holder">
+                    <img alt="background" src="{% static 'canteen/img/restaurant-3.jpg' %}" />
+                </div>
+                <div class="container pos-vertical-center">
+                    <div class="row">
+                        <div class="col-sm-8 col-md-6">
+                            <h1>
+                                Food Menu
+                            </h1>
+                        </div>
+                    </div>
+                    <!--end of row-->
+                </div>
+                <!--end of container-->
+            </section>
+            <section>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="text-block">
+                                <h3>Entreé</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            {% for each in dish_list %}
+                            <div class="text-block">
+                                <h4>{{ each.num }} &mdash; {{ each.name }} &mdash; {{ each.price }}</h4>
+                                <p>
+                                    Cauliflower pureé, cured jamon, lemon
+                                </p>
+                                <a class="btn" href="sms:12175744192;?&body=Add {{each.num}}">Add to order</a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <!--end of row-->
+                </div>
+                <!--end of container-->
+            </section>
 
-        {% load static %}
-        <link rel="stylesheet" href="{% static 'canteen/bulma/css/bulma.css' %}" />
-        <link rel="stylesheet" href="{% static 'canteen/font-awesome-4.7.0/css/font-awesome.min.css' %}" /> 
-
-    </head>  
-
-    <body> 
-    <section class="hero is-warning">
-    <!-- Hero header: will stick at the top -->
-    <div class="hero-head">
-      <header class="nav">
-        <div class="container">
-          <div class="nav-item">
-            <a class="title" href="">
-              <strong>Menu</strong>
-            </a>
-          </div>
-          <span class="nav-toggle">
-            <span></span>
-            <span></span>
-            <span></span>
-          </span>
-          <div class="nav-right nav-menu">
-            <span class="nav-item">
-
-            </span>
-          </div>
+            <section class="slider" data-arrows="true" data-paging="true">
+                <ul class="slides">
+                    <li>
+                        <img alt="Image" src="{% static 'canteen/img/restaurant-4.jpg' %}" />
+                    </li>
+                    <li>
+                        <img alt="Image" src="{% static 'canteen/img/restaurant-6.jpg' %}" />
+                    </li>
+                    <li>
+                        <img alt="Image" src="{% static 'canteen/img/restaurant-5.jpg' %}" />
+                    </li>
+                </ul>
+            </section>
+            <footer class="space--sm footer-1 text-center-xs bg--dark ">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <ul class="list-inline list--hover">
+                            <span class="type--fine-print">Copyright&copy;
+                                <span class="update-year"></span> La Luo </span>
+                            </ul>
+                        </div>
+                        <div class="col-sm-6 text-right text-center-xs">
+                            <ul class="social-list list-inline list--hover">
+                                <li>
+                                    <a href="https://github.com/Rola1993">
+                                        <i class="socicon socicon-github icon icon--xs"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://www.linkedin.com/in/la-luo-637b4a94/ ">
+                                        <i class="socicon socicon-linkedin icon icon--xs"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                            <a href="mailto:rola.uiuc@gmail.com?Subject=Hello%20La" class="btn type--uppercase">
+                                <span class="btn__text">
+                                    Contact us
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!--end of container-->
+            </footer>
         </div>
-      </header>
-    </div>
-
-    <div class="hero-body">
-      <div class="container has-text-centered">
-        <p class="title is-1">
-       	{% if menu %} 
-          <strong>{{ menu.name }}</strong>
-          <div class="subtitle is-3">
-            <br>{{ menu.info }}
-          </div>
-         {% endif %} 
-        </p>
-        <h2 class="subtitle">
-        </h2>
-      </div>
-    </div>
-      </section>
-       
-  <div class="container">
-    <div class="column is-narrow"></div>
-    <!--
-  <table>
-    <thead>
-      <tr>
-        <th>Number</th>
-        <th>Name</th>
-        <th>Price</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for each in dish_list %}
-      <tr>
-        <td>{{ each.num }}</td>
-        <td>{{ each.name }}</td>
-        <td>{{ each.price }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
--->
-       {% for each in dish_list %}
-   					<div class="box"> 
-                  <p class="title is-2">#<strong>{{ each.num }}&nbsp;&nbsp;{{ each.name }}</strong></p>
-      					  <p class="subtitle is-3">
-      					  	Price: ${{ each.price }}   
-      					  	<br>
-      					    Review: {{ each.nums_stars }}/5</p>
-   			 	  </div>
-       {% endfor %}
-	</div>
-
-</body>
-
-
+        <!--<div class="loader"></div>-->
+        <a class="back-to-top inner-link" href="#start" data-scroll-class="100vh:active">
+            <i class="stack-interface stack-up-open-big"></i>
+        </a>
+        <script src="{% static 'canteen/js/jquery-3.1.1.min.js' %}"></script>
+        <script src="{% static 'canteen/js/flickity.min.js' %}"></script>
+        <script src="{% static 'canteen/js/easypiechart.min.js' %}"></script>
+        <script src="{% static 'canteen/js/parallax.js' %}"></script>
+        <script src="{% static 'canteen/js/typed.min.js' %}"></script>
+        <script src="{% static 'canteen/js/datepicker.js' %}"></script>
+        <script src="{% static 'canteen/js/isotope.min.js' %}"></script>
+        <script src="{% static 'canteen/js/ytplayer.min.js' %}"></script>
+        <script src="{% static 'canteen/js/lightbox.min.js' %}"></script>
+        <script src="{% static 'canteen/js/granim.min.js' %}"></script>
+        <script src="{% static 'canteen/js/jquery.steps.min.js' %}"></script>
+        <script src="{% static 'canteen/js/countdown.min.js' %}"></script>
+        <script src="{% static 'canteen/js/twitterfetcher.min.js' %}"></script>
+        <script src="{% static 'canteen/js/spectragram.min.js' %}"></script>
+        <script src="{% static 'canteen/js/smooth-scroll.min.js' %}"></script>
+        <script src="{% static 'canteen/js/scripts.js' %}"></script>
+    </body>
 </html>
