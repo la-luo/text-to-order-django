@@ -28,7 +28,7 @@
                     <div class="row">
                         <div class="col-md-3 col-sm-3 col-xs-4">
                             <div class="row"><!-- <div class="bar__module"> -->
-                            <a href="{% url "home_view" %}"><strong>Home</strong></a> | <a href="{% url "restaurant" canteen.id %}">Restaurant</a> | <a href=""><strong>Menu</strong></a>
+                            <a href="{% url "home_view" %}"><strong>Home</strong></a> > <a href="{% url "restaurant" canteen.id %}">Restaurant</a> > <a href=""><strong>Menu</strong></a>
                             </div>
                             <!--end module-->
                         </div>
@@ -42,7 +42,7 @@
         <div class="main-container">
             <section id="home" class="cover height-100 imagebg parallax" data-overlay="2">
                 <div class="background-image-holder">
-                    <img src="{% static 'canteen/img/restaurant-1.jpg' %}" alt="background"/>
+                    <img src="{% static 'canteen/img/menu.jpg' %}" alt="background"/>
                 </div>
                 <div class="container pos-vertical-center">
                     <div class="row">
@@ -54,11 +54,6 @@
                                   </div>
                                  {% endif %} 
                             </h1>
-                            <a class="btn btn--primary type--uppercase inner-link" href="#menu">
-                                <span class="btn__text">
-                                    Explore The Menu
-                                </span>
-                            </a>
                         </div>
                     </div>
                     <!--end of row-->
@@ -83,15 +78,17 @@
                 </div>
                 <!--end of container-->
             </section>
-            <section id="services" class="cover height-50 imagebg parallax" data-overlay="3" id="menu">
+            {% for each_type in subtype %}
+
+            <section id="services" class="cover height-40 imagebg parallax" data-overlay="3" id="menu">
                 <div class="background-image-holder">
-                    <img alt="background" src="{% static 'canteen/img/restaurant-2.jpg' %}" />
+                    <img alt="background" src="{% static 'canteen/img/bg.jpg' %}" />
                 </div>
                 <div class="container pos-vertical-center">
                     <div class="row">
                         <div class="col-sm-8 col-md-6">
                             <h1>
-                                Food Menu
+                                {{ each_type }} Menu
                             </h1>
                         </div>
                     </div>
@@ -101,94 +98,35 @@
             </section>
             <section>
                 <div class="container">
+                        {% for each in dish_list %}
+                            {% if each.dish_type == each_type %}
                     <div class="row">
-                        <div class="col-md-4">
-                            <div class="text-block">
-                                <h3>Entreé</h3>
-                            </div>
+                        <div class="col-md-2">
                         </div>
-                        <div class="col-md-4">
-                            {% for each in dish_list %}
+                        <div class="col-md-5">
                             <div class="text-block">
                                 <h4>{{ each.num }} &mdash; {{ each.name }} &mdash; {{ each.price }}</h4>
-                                <p>
-                                    Cauliflower pureé, cured jamon, lemon
-                                </p>
                                  <!-- <a href="sms:12175744192;?&body=Add #{{each.num}}">Send an SMS</a> -->
                             </div>
-                            {% endfor %}
                         </div>
+                        <div class="col-md-5">
+                            <div class="text-block">
+                                <p>
+                                    {{ each.description }}
+                                </p>
+                            </div>
+                        </div>  
                     </div>
                     <!--end of row-->
+                            {% endif %}
+                        {% endfor %}
                 </div>
                 <!--end of container-->
             </section>
+            {% endfor %}
+            
 
-            <section id="work" class="cover height-50 imagebg parallax" data-overlay="1">
-                <div class="background-image-holder">
-                    <img alt="background" src="{% static 'canteen/img/restaurant-3.jpg' %}" />
-                </div>
-                <div class="container pos-vertical-center">
-                    <div class="row">
-                        <div class="col-sm-8 col-md-6">
-                            <h1>
-                                Beverages
-                            </h1>
-                        </div>
-                    </div>
-                    <!--end of row-->
-                </div>
-                <!--end of container-->
-            </section>
-            <section>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="text-block">
-                                <h3>Red Wine</h3>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="text-block">
-                                <h4>2011 Guild Shiraz &mdash; 16/54</h4>
-                                <p>
-                                    Margaret River, South Australia
-                                </p>
-                            </div>
-                            <div class="text-block">
-                                <h4>2010 Montague Cabernet &mdash; 18/75</h4>
-                                <p>
-                                    Barossa Valley, South Australia
-                                </p>
-                            </div>
-                            <div class="text-block">
-                                <h4>2013 Mayfair Shiraz &mdash; 14/48</h4>
-                                <p>
-                                    Yarra Valley, Victoria
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="text-block">
-                                <h4>2014 Koringal Grenache Shirz Mourvedre &mdash; 18/79</h4>
-                                <p>
-                                    Malborough, New Zealand
-                                </p>
-                            </div>
-                            <div class="text-block">
-                                <h4>2012 Ladies Who Shoot Their Lunch &mdash; 13/64</h4>
-                                <p>
-                                    Strathbogie Ranges, Victoria
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <!--end of row-->
-                </div>
-                <!--end of container-->
-            </section>
-
-            <section class="slider" data-arrows="true" data-paging="true">
+<!--             <section class="slider" data-arrows="true" data-paging="true">
                 <ul class="slides">
                     <li>
                         <img alt="Image" src="{% static 'canteen/img/restaurant-4.jpg' %}" />
@@ -200,33 +138,7 @@
                         <img alt="Image" src="{% static 'canteen/img/restaurant-5.jpg' %}" />
                     </li>
                 </ul>
-            </section>
-            <section id="contact" class="imageblock switchable feature-large space--lg">
-                <div class="imageblock__content col-md-6 col-sm-4 pos-right">
-                    <div class="map-container" data-maps-api-key="AIzaSyCfo_V3gmpPm1WzJEC9p_sRbgvyVbiO83M" data-address="123 Rathdowne street, Carlton Victoria" data-marker-title="Stack"></div>
-                </div>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-5 col-sm-7">
-                            <h3>119 Rathdowne Street
-                                <br />Carlton, Victoria 3001</h3>
-                            <p class="lead">
-                                E:
-                                <a href="#">hello@stack.net</a>
-                                <br /> P: +613 4827 2294
-                            </p>
-                            <p class="lead">
-                                Give us a call or drop by anytime, we endeavour to answer all enquiries within 24 hours on business days.
-                            </p>
-                            <p class="lead">
-                                We are open from 9am &mdash; 5pm week days.
-                            </p>
-                        </div>
-                    </div>
-                    <!--end of row-->
-                </div>
-                <!--end of container-->
-            </section>
+            </section> -->
  <footer class="space--sm footer-1 text-center-xs bg--dark ">
                 <div class="container">
                     <div class="row">

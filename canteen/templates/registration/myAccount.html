@@ -28,7 +28,6 @@
                             <a href="{% url "home_view" %}">Home</a> > <a href="">My account</a> 
                         </div>
                     </div>
-                    <!--end of row-->
                     <div class="col-md-12 text-right text-left-xs text-left-sm">
                         <div class="bar__module">
                             <a class="btn btn--sm btn--primary type--uppercase" href="{% url "logout" %}">
@@ -49,111 +48,92 @@
             <div class="container">
               <br>
                 <p class="h2">Welcome back!</p>
-                {% if restaurant_list %} 
+            {% if restaurant_list %} 
                 <p class="lead">
                     You have {{ restaurant_list|length }} restaurant{{ restaurant_list|pluralize }}. You can edit their info here.
                 </p>
-              <br>
             </div>
+            <hr>
             {% for each in restaurant_list %}
                 <div class="container">
                   <p>
-                      <strong>Name: {{ each.name }} </strong>
+                      <span class="h3"><strong>{{ each.name }} </strong> </span>
+                      Address: {{ each.address }}
                       <br>
-                      <form action="/edit-res/{{ each.id }}/" method="post">
-                                {% csrf_token %}
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        <input type="text" name="newname" placeholder="New Restaurant Name" />
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <button class="btn btn--primary type--uppercase" type="submit">Update Name</button>
-                                    </div>
-                                </div>
-                      </form>
+                      Text Number: {{ each.phone_number }}
                       <br>
-                      <strong>Address: {{ each.address }}</strong>
-                      <br>
-                      <br>
-                      <form action="/edit-res/{{ each.id }}/" method="post">
-                                {% csrf_token %}
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        <input type="text" name="newaddress" placeholder="New Address" />
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <button class="btn btn--primary type--uppercase" type="submit">Update Address</button>
-                                    </div>
-                                </div>
-                      </form>
                   </p>
-                  <p>
-                      <strong> {{ each.name }} menu{{ each.get_menu|pluralize }}:</strong>
-                  </p>
+                    <br>
                         {% for each_menu in each.get_menu %}
-                        <div class="col-sm-6 ">
-                            <div class="pricing pricing-1 boxed boxed--lg boxed--border">
-                                <span class="h3">
+                        <div class="col-sm-6">
+                                <span class="h4">
                                     <strong>{{ each_menu.name }}</strong>
                                 </span>
-                                <hr>
                                 <ul>
                                     <li>
-                                        <span class="checkmark bg--primary-1"></span>
                                         <span>{{ each_menu.info }}</span>
                                     </li>
                                       <li>
-                                        <span class="checkmark bg--primary-1"></span>
                                         <span>Last updated time: {{ each_menu.last_updated }}</span>
                                     </li>
                                 </ul>
-                                <a class="btn btn--primary" href="{% url "edit_menu_view" each.id %}">
-                                    <span class="btn__text">
-                                        Edit this menu
-                                    </span>
-                                </a>
-                            </div>
                             <!--end of pricing-->
                         </div>
                         {% endfor %}
                 </div>
-                <div class="container"> 
-
+                <br>
+                <div class = "container">
+                    <div class = "row">
+                            <div class="col-xs-6"></div>
+                            <a class="btn btn--primary" href="{% url "edit_res_view" each.id %}">
+                                <span class="btn__text">
+                                    Edit this restaurant
+                                </span>
+                            </a>
+                            <a class="btn btn-danger" href="{% url "delete_res" each.id %}">
+                                <span class="btn__text">
+                                    Remove this restaurant
+                                </span>
+                            </a> 
+                    </div>
                 </div>
+                <hr>
             {% endfor %} 
             {% endif %}
-
-            <br>
-          <section>
            <div class="container">
             <h3>
              <strong>Add New Restaurant</strong>
+
             </h3>
-              <form method="post">
-                {% csrf_token %}
-                {% for field in form %}
-                  <p>
-                    <div class="field">
-                    <div class="control">
-                      &nbsp;&nbsp;&nbsp;&nbsp;{{ field }}
-                    {% if field.help_text %}
-                      <small style="color: grey">{{ field.help_text }}</small>
-                    {% endif %}
-                    {% for error in field.errors %}
-                      <p style="color: red">{{ error }}</p>
-                    {% endfor %}
-                    </div>
-                    </div>
-                    <br>
-                  </p>
-                {% endfor %}
-                <br>
-                <div class="col-xs-6">
-                    <button type="submit" class="btn btn--primary type--uppercase">Submit</button>
-                </div>
-              </form>
+                <form method="post"> 
+                    {% csrf_token %}
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <input type="text" name="resname" placeholder="New Restaurant Name" />
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <input type="text" name="resnumber" placeholder="New Restaurant Number" />
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <input type="text" name="resaddress" placeholder="New Restaurant Address" />
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <button class="btn btn--primary type--uppercase" type="submit">Submit</button>
+                            </div>                
+                        </div>
+                </form>
             </div>
-        </section>
+            <br>
+            <br>
             <footer class="space--sm footer-1 text-center-xs bg--dark ">
                 <div class="container">
                     <div class="row">

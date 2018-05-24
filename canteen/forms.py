@@ -62,42 +62,63 @@ class resForm(forms.ModelForm):
         res_number = self.cleaned_data['res_number']
         res_address = self.cleaned_data['res_address']
 
-        try:
-            res_object = Canteen.objects.get(name=res_name, manager=user, address=res_address, phone_number=res_number)
-        except:
-            res_object = Canteen.objects.create(name=res_name, manager=user, address=res_address, phone_number=res_number)
-
+        res_object = Canteen.objects.create(name=res_name, manager=user, address=res_address, phone_number=res_number)
+        new_menu = Menu.objects.create(restaurant = res_object)
+        
         return res_object
 
 class menuForm(forms.ModelForm):
-    # type_choice = [('food','Food'), ('drinks','Drinks')]
-    type_choice = []
+    menu_name = forms.CharField(max_length=30, required=True,  widget=forms.TextInput(attrs={'placeholder': 'Menu name', 'style': 'width:200px'}))
+    info = forms.CharField(max_length=12, required=True,  widget=forms.TextInput(attrs={'placeholder': 'Menu description', 'style': 'width:400px'}))
 
-    def fill_typechoice(self, menu):
-        type_list = Menu.get_list(menu)
-        for each in type_list:
-            type_tuple = tuple(each, each)
-            type_choice += type_tuple
+    class Meta:
+        model = Menu
+        fields = ('menu_name', 'info')
+
+    def add_menu(self, user, res):
+        menu_name = self.cleaned_data['menu_name']
+        info = self.cleaned_data['info']
+
+        try:
+            menu_object = Menu.objects.get(name=menu_name, manager=user, restaurant = res, info = info)
+        except:
+            menu_object = Menu.objects.create(name=menu_name, manager=user, restaurant = res, info = info)
+
+        return menu_object
+
+
+class dishForm(forms.ModelForm):
+
+    def __init__(self, list=None, *args, **kwargs):
+        super(dishForm, self).__init__(*args, **kwargs)
+        self.fields["dish_type"]=forms.CharField(label="Type", widget=forms.Select(attrs={'style': 'width:100px'}, choices=list))
+
+    subtype = (('food','food'), ('drinks','drinks'))
 
     dish_name = forms.CharField(max_length=100, required=True,  widget=forms.TextInput(attrs={'placeholder': 'Dish name', 'style': 'width:400px'}))
     dish_price = forms.FloatField(required=True, widget=forms.TextInput(attrs={'placeholder': 'Dish price', 'style': 'width:400px'}))
-    dish_type = forms.CharField(label="Type", widget=forms.Select(attrs={'style': 'width:100px'}, choices=type_choice))
+    dish_type = forms.CharField(required=True, label="Type", widget=forms.Select(attrs={'style': 'width:100px'}, choices=subtype))
 
-    class Meta:
+    class Meta: 
         model = Dish
         fields = ('dish_type', 'dish_name', 'dish_price',)
 
     def add_dish(self, menu):
-        dish_name = self.cleaned_data['dish_name']
-        dish_price = self.cleaned_data['dish_price']
-        dish_type = self.cleaned_data['dish_type']
+        dish_name = self['dish_name']
+        dish_price = self['dish_price']
+        dish_type = self['dish_type']
         dish_num = len(menu.get_dish) + 1
+        restaurant = menu.restaurant
 
-        try:
-            dish_object = Dish.objects.get(dish_type=dish_type, num=dish_num, name=dish_name, price=dish_price, menu=menu, restaurant=menu.restaurant)
-        except:
-            dish_object = Dish.objects.create(dish_type=dish_type, num=dish_num, name=dish_name, price=dish_price, menu=menu, restaurant=menu.restaurant)
+        dish_object = Dish.objects.create(num=dish_num, name=dish_name, price=dish_price, menu=menu, restaurant=restaurant)
 
         return dish_object
 
+        # dish_name = self.cleaned_data['dish_name']
+        # dish_price = self.cleaned_data['dish_price']
+        # dish_type = self.cleaned_data['dish_type']
 
+        # try:
+        #     dish_object = Dish.objects.get(dish_type=dish_type, num=dish_num, name=dish_name, price=dish_price, menu=menu, restaurant=restaurant)
+        # except:
+        #     dish_object = Dish.objects.create(dish_type=dish_type, num=dish_num, name=dish_name, price=dish_price, menu=menu, restaurant=restaurant)

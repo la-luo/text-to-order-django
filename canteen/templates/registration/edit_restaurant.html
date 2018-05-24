@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <meta charset="utf-8">
+        <title>site name - my account</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Site Description Here">
+         {% load static %}
+        <link href="{% static 'canteen/css/bootstrap.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/stack-interface.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/socicon.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/lightbox.min.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/flickity.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/iconsmind.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/jquery.steps.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/theme.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/custom.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:200,300,400,400i,500,600,700%7CMerriweather:300,300i" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+        <a id="start"></a>
+        <nav id="menu2" class="bar bar-2 hidden-xs bar--absolute bg--dark height-20">
+                <div class="container">
+                    <div class="col-xs-4">
+                        <div class="bar__module">
+                            <a href="{% url "home_view" %}">Home</a> > <a href="{% url "account" %}">My account</a> > <a href="">My restaurant</a> 
+                        </div>
+                    </div>
+                    <!--end of row-->
+                    <div class="col-md-12 text-right text-left-xs text-left-sm">
+                        <div class="bar__module">
+                            <a class="btn btn--sm btn--primary type--uppercase" href="{% url "logout" %}">
+                                <span class="btn__text">
+                                        &nbsp;Log out
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+        </nav>
+
+                <section class="cover imagebg height-20" data-overlay="3">
+                    <div class="background-image-holder">
+                        <img alt="background" src="{% static 'canteen/img/account.jpg' %}" />
+                    </div>
+                </section>
+            <div class="container">
+              <br>
+                <p class="h2">Welcome back!</p>
+                <p class="lead">
+                    You can edit your restaurant information here.
+                </p>
+            </div>
+            <hr>
+            {% if restaurant %}
+                <div class="container">
+                  <p>
+                      <strong>Name: {{ restaurant.name }} </strong>
+                      <br>
+                      <form action="/edit-res/{{ restaurant.id }}/" method="post">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <input type="text" name="newname" placeholder="New Restaurant Name" />
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button class="btn btn--primary type--uppercase" type="submit">Update Name</button>
+                                    </div>
+                                </div>
+                      </form>
+                      <br>
+                      <strong>Address: {{ restaurant.address }}</strong>
+                      <br>
+                      <br>
+                      <form action="/edit-res/{{ restaurant.id }}/" method="post">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <input type="text" name="newaddress" placeholder="New Address" />
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button class="btn btn--primary type--uppercase" type="submit">Update Address</button>
+                                    </div>
+                                </div>
+                      </form>
+                    <br>
+                      <strong>Phone Number: {{ restaurant.phone_number }}</strong>
+                      <br>
+                      <br>
+                      <form action="/edit-res/{{ restaurant.id }}/" method="post">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <input type="text" name="newophone" placeholder="New Phone Number" />
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button class="btn btn--primary type--uppercase" type="submit">Update Phone</button>
+                                    </div>
+                                </div>
+                      </form>
+                  </p>
+                  <p>
+                      <strong> {{ restaurant.name }} menu{{ restaurant.get_menu|pluralize }}:</strong>
+                  </p>
+                        {% for each_menu in restaurant.get_menu %}
+                        <div class="col-sm-6 ">
+                            <div class="pricing pricing-1 boxed boxed--lg boxed--border">
+                                <span class="h3">
+                                    <strong>{{ each_menu.name }}</strong>
+                                </span>
+                                <hr>
+                                <ul>
+                                    <li>
+                                        <span class="checkmark bg--primary-1"></span>
+                                        <span>{{ each_menu.info }}</span>
+                                    </li>
+                                      <li>
+                                        <span class="checkmark bg--primary-1"></span>
+                                        <span>Last updated time: {{ each_menu.last_updated }}</span>
+                                    </li>
+                                </ul>
+                                <a class="btn btn--primary" href="{% url "edit_menu_view" each_menu.id %}">
+                                    <span class="btn__text">
+                                        Edit this menu
+                                    </span>
+                                </a>
+                            </div>
+                            <!--end of pricing-->
+                        </div>
+                        {% endfor %}
+                </div>
+                <div class="container"> 
+
+                </div>
+            {% endif %}
+            <br>
+<br>
+<br>
+            <footer class="space--sm footer-1 text-center-xs bg--dark ">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <ul class="list-inline list--hover">
+                            <span class="type--fine-print">Copyright&copy;
+                                <span class="update-year"></span> La Luo </span>
+                            </ul>
+                        </div>
+                        <div class="col-sm-6 text-right text-center-xs">
+                            <ul class="social-list list-inline list--hover">
+                                <li>
+                                    <a href="https://github.com/Rola1993">
+                                        <i class="socicon socicon-github icon icon--xs"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://www.linkedin.com/in/la-luo-637b4a94/ ">
+                                        <i class="socicon socicon-linkedin icon icon--xs"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                            <a href="mailto:rola.uiuc@gmail.com?Subject=Hello%20La" class="btn type--uppercase">
+                                <span class="btn__text">
+                                    Contact us
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!--end of container-->
+            </footer>
+        <a class="back-to-top inner-link" href="#start" data-scroll-class="100vh:active">
+            <i class="stack-interface stack-up-open-big"></i>
+        </a>
+        <script src="{% static 'canteen/js/jquery-3.1.1.min.js' %}"></script>
+        <script src="{% static 'canteen/js/flickity.min.js' %}"></script>
+        <script src="{% static 'canteen/js/easypiechart.min.js' %}"></script>
+        <script src="{% static 'canteen/js/parallax.js' %}"></script>
+        <script src="{% static 'canteen/js/typed.min.js' %}"></script>
+        <script src="{% static 'canteen/js/datepicker.js' %}"></script>
+        <script src="{% static 'canteen/js/isotope.min.js' %}"></script>
+        <script src="{% static 'canteen/js/ytplayer.min.js' %}"></script>
+        <script src="{% static 'canteen/js/lightbox.min.js' %}"></script>
+        <script src="{% static 'canteen/js/granim.min.js' %}"></script>
+        <script src="{% static 'canteen/js/jquery.steps.min.js' %}"></script>
+        <script src="{% static 'canteen/js/countdown.min.js' %}"></script>
+        <script src="{% static 'canteen/js/twitterfetcher.min.js' %}"></script>
+        <script src="{% static 'canteen/js/spectragram.min.js' %}"></script>
+        <script src="{% static 'canteen/js/smooth-scroll.min.js' %}"></script>
+        <script src="{% static 'canteen/js/scripts.js' %}"></script>
+</body>
+</html>

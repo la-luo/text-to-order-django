@@ -5,16 +5,15 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-type" content="text/html; charset=utf-8" /> 
         <title>Checkout</title>
-        <script type="text/javascript" src="https://js.stripe.com/v1/"></script>
-        <script src="https://checkout.stripe.com/checkout.js"></script>
     </head>
 
 <body onload="checkout()">
+
 <script>
   function checkout() {
     // Open Checkout with further options:
     var handler = StripeCheckout.configure({
-    key: 'pk_test_6pRNASCoBOKtIshFeQd4XMUh',
+    key: 'pk_test_IeVp9JEk39LS8IJcRGjm9Ter',
     image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
     locale: 'auto',
     token: function(token) {
@@ -22,11 +21,12 @@
       // Get the token ID to your server-side code for use.
         // alert(JSON.stringify(token));
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "http://127.0.0.1:8000/charge/", true);
+        xhr.open("POST", "http://167.99.161.247:8000/charge/", true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify({
             "token":token
-          }
+          }));
+      }
     });
 
     var restaurant_name = "{{restaurant_name}}";
