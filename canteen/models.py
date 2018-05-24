@@ -5,8 +5,8 @@ import json
 class Canteen(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=30)
-    manager = models.ManyToManyField(User, related_name='manager')
-    address = models.CharField(max_length=50)
+    manager = models.ForeignKey(User, related_name='manager', null=True)
+    address = models.CharField(max_length=50, null=True)
     phone_number = models.CharField(max_length=12, null=True)
 
     def __str__(self):
@@ -23,10 +23,9 @@ class Canteen(models.Model):
 class Menu(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=30)
-    info = models.CharField(max_length = 200)
+    info = models.CharField(max_length = 200, null=True)
     last_updated = models.DateTimeField(auto_now_add=True)
-    restaurant = models.ForeignKey(Canteen)
-    menu_type = models.CharField(max_length=10, null=True)
+    restaurant = models.ForeignKey(Canteen, null=True)
     dishtype_list = models.CharField(max_length=200, default='["food","drinks"]')
 
     def __str__(self):
@@ -46,9 +45,10 @@ class Menu(models.Model):
 class Dish(models.Model):
     id = models.IntegerField(primary_key=True)
     num = models.IntegerField(null=True)
-    dish_type = models.CharField(max_length=10, default='food')
+    dish_type = models.CharField(max_length=20, default='food')
     name = models.CharField(max_length=100)
     price = models.FloatField(null=True)
+    description = models.CharField(max_length=100, null='Add description for this dish')
     menu = models.ForeignKey(Menu, null=True)
     restaurant = models.ForeignKey(Canteen, null=True)
 
@@ -66,9 +66,7 @@ class Conversation(models.Model):
     order = models.CharField(max_length=200,  default='[]')
     restaurant = models.ForeignKey(Canteen, null=True)
     total_money = models.FloatField(default = 0.0)
-    street_address = models.CharField(max_length=50, null=True)
-    city = models.CharField(max_length=20, null=True)
-    State = models.CharField(max_length=15, null=True)
+    name_address = models.CharField(max_length=50, null=True)
     last_message = models.CharField(max_length=30, null=True)
 
     def set_order(self, updated_order):

@@ -29,7 +29,7 @@
                         <div class="col-md-2 text-right text-left-xs text-left-sm">
                             <div class="bar__module">
                                 <ul class="menu-horizontal text-left">
-                                    <a href="{% url "home_view" %}"> <strong>Home</strong> </a> | <a href="">Restaurant</a> 
+                                    <a href="{% url "home_view" %}"> <strong>Home</strong> </a> > <a href="">Restaurant</a> 
                                 </ul>
                             </div>
                         </div>
@@ -80,9 +80,9 @@
             <section>
                 <div class="container">
                     {% for each in res.get_menu %}
-                        <div class="col-sm-6 ">
+                        <div class="text-center">
                             <div class="pricing pricing-1 boxed boxed--lg boxed--border">
-                                <span class="h3">
+                                <span class="h3 text-center">
                                     <strong>{{ each.name }}</strong>
                                 </span>
                                 <hr>
@@ -95,25 +95,28 @@
                                         <span class="checkmark bg--primary-1"></span>
                                         <span>Last updated time: {{ each.last_updated }}</span>
                                     </li>
+                                {% for each_dish in each.get_dish %}
+                                    <li>
+                                        <span>#{{ each_dish.num }}</span>
+                                        <span>{{ each_dish.name }}</span>
+                                        <span>${{ each_dish.price }}</span>
+                                    </li>
+                                {% endfor %}
                                 </ul>
                                 <a class="btn btn--primary" href="{% url "menu_view" each.id %}">
                                     <span class="btn__text">
-                                        Select this menu
+                                        View Menu
                                     </span>
                                 </a>
                             </div>
                             <!--end of pricing-->
                         </div>
-
                     {% endfor %} 
                 </div>
                 <!--end of container-->
             </section>
 
             <section id="contact" class="imageblock switchable feature-large space--lg">
-                <div class="imageblock__content col-md-6 col-sm-4 pos-right">
-                    <div class="map-container" data-maps-api-key="AIzaSyCfo_V3gmpPm1WzJEC9p_sRbgvyVbiO83M" data-address="{{res.address}}" data-marker-title="Stack"></div>
-                </div>
                 <div class="container">
                     <div class="row">
                         <div class="col-md-5 col-sm-7">

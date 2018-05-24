@@ -1,5 +1,5 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
     <head>
         <meta charset="utf-8">
         <title>site name - edit menu</title>
@@ -52,16 +52,44 @@
               <br>
                         {% if menu %} 
                            <p class="h2">
-                                {{ menu.restaurant }} | {{ menu.name }} 
+                                {{ menu.restaurant }} | <a href="{% url "menu_view" menu.id %}">Preview menu</a>
                            </p>
-                            <p class="lead">
-                                {{ menu.info }}
+                             <p class="h4">
+                                Menu name: {{ menu.name }}
                             </p>
-
+                        <form action="/edit-menu/{{ menu.id }}/" method="post">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <input type="text" name="menuname" placeholder="New menu name" />
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button class="btn btn--primary type--uppercase" type="submit">Update</button>
+                                    </div>
+                                </div>
+                       </form>
+                       <br>
+                            <p class="h4">
+                                Menu description: {{ menu.info }}
+                            </p>
+                        <form action="/edit-menu/{{ menu.id }}/" method="post">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-sm-8">
+                                        <textarea rows="1" name="menudes" placeholder="New Menu Description"></textarea>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button class="btn btn--primary type--uppercase" type="submit">Update</button>
+                                    </div>
+                                </div>
+                       </form>
                         {% endif %}
             </div>
             <div class="container">
                 <br>
+                <p class="h4">
+                    Menu dish types:
+                </p>
                 <div class="field is-grouped is-grouped-multiline">
                     {% for each in dishtype_list %}
                     <span class="tag is-warning is-medium">
@@ -94,7 +122,7 @@
            {% endif %}
                 <div class="column is-half">
                     <div class="box"> 
-                          <p class="title is-5"><strong>#{{ each.num }}&nbsp;&nbsp;{{ each.name }}</strong></p>
+                          <p class="title is-5"><strong>#{{ each.num }}&nbsp;&nbsp;{{ each.name }}&nbsp;({{ each.dish_type }})</strong></p>
                         <form action="/edit-dish/{{ each.id }}/" method="post">
                                 {% csrf_token %}
                                 <div class="row">
@@ -108,7 +136,8 @@
                       </form>
                           <p class="subtitle is-6">
                             <br>
-                            Price: ${{ each.price }}   
+                            Price: &nbsp;${{ each.price }}   
+                          </p>
                       <form action="/edit-dish/{{ each.id }}/" method="post"> 
                                 {% csrf_token %}
                                 <div class="row">
@@ -120,7 +149,20 @@
                                     </div>
                                 </div>
                       </form>
+                          <p class="subtitle is-6">
+                            <br>
+                            Description: &nbsp;{{ each.description }}   
                           </p>
+                      <form action="/edit-dish/{{ each.id }}/" method="post"> 
+                                <div class="col-sm-12">
+                                    <textarea rows="4" name="newdes" placeholder="New Description"></textarea>
+                                </div>
+                                <div class="col-sm-8">
+                                </div>
+                                 <div class="col-sm-4">
+                                    <button class="btn btn--primary type--uppercase" type="submit">Update</button>                
+                                </div>
+                     </form>
                           <br><a href="{% url "delete_dish_view" each.id %}">Delete this dish</a>
                     </div>    
                 </div>
@@ -134,32 +176,43 @@
     <h3>
      <strong>Add New Dish To My Menu </strong>
     </h3>
-      <form method="post">
-        {% csrf_token %}
-        {% for field in form %}
-          <p>
-            <div class="field">
-            <div class="control">
-              &nbsp;&nbsp;&nbsp;&nbsp;{{ field }}
-            {% if field.help_text %}
-              <small style="color: grey">{{ field.help_text }}</small>
-            {% endif %}
-            {% for error in field.errors %}
-              <p style="color: red">{{ error }}</p>
-            {% endfor %}
-            </div>
-            </div>
-            <br>
-          </p>
-        {% endfor %}
-        <br>
-        <div class="col-xs-6">
-            <button type="submit" class="btn btn--primary type--uppercase">Add this dish</button>
-        </div>
-      </form>
+          <form action="/add-dish/{{ menu.id }}/" method="post"> 
+                    {% csrf_token %}
+                    <div class = "row">
+                        <div class="col-sm-2">
+                            <select name="dropdown">
+                                <option value="" disabled="disabled" selected="selected">Dish Type</option>
+                                {% for each in dishtype_list %}
+                                <option value="{{each}}">{{ each }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <br>
+                    <div class = "row">
+                        <div class="col-sm-3">
+                            <input type="text" name="dishname" placeholder="New Dish Name" />
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="text" name="dishprice" placeholder="New Dish Price" />
+                        </div>
+                    </div>
+                    <div class = "row">
+                        <div class="col-sm-6">
+                            <textarea rows="2" name="dishdes" placeholder="New Menu Description"></textarea>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <button class="btn btn--primary type--uppercase" type="submit">Submit</button>                
+                        </div>
+                    </div>
+
+          </form>
     </div>
 </section>
-        <footer class="space--sm footer-1 text-center-xs bg--dark ">
+            <footer class="space--sm footer-1 text-center-xs bg--dark ">
                 <div class="container">
                     <div class="row">
                         <div class="col-sm-6">
