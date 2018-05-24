@@ -320,7 +320,7 @@ def sms(request):
         conversation.name_address = content
         conversation.last_message = 'received name'
         conversation.save()
-        msg = resp.message("We have received your info! Here is a link to our "+ menuType + " menu:" + menu_link + ". Please order by texting 'Add' with the dish number like 'Add 1', or clicking the button in the menu. When you are finished, just text us 'check out'.")
+        msg = resp.message("We have received your info! Here is a link to our menu:" + menu_link + ". Please order by texting 'Add' with the dish number like 'Add 1', or clicking the button in the menu. When you are finished, just text us 'check out'.")
         return HttpResponse(str(resp))
 
     add_pattern = re.compile('[Aa]dd')
