@@ -382,6 +382,7 @@ def sms(request):
 @csrf_exempt
 def charge(request, conversation_id):
     stripe.api_key = "sk_test_D31hRGRmIRtbtdd7p8ZQtEtU"
+    conversation = Conversation.objects.get(id = conversation_id)
 
     data = json.loads(request.body)
     token = data["stripeToken"]  #token = data["token"]["id"]
@@ -401,7 +402,6 @@ def charge(request, conversation_id):
 
     client = Client("ACff2f802fee15e3d862ea55067969b4ce", "516a408fbb0e0dbb3c3b48cb598b8061")
 
-    conversation = Conversation.objects.get(id = conversation_id)
     conversation.delete()
 
     message = client.messages.create(
