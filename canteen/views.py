@@ -71,7 +71,7 @@ def login_view(request):
     return render(request, 'registration/login.html')
 
 def logout_view(request):
-    return render(request, 'registration/logout.html')
+    return redirect(login_view)
 
 def signup(request):
     if request.method == 'POST':
