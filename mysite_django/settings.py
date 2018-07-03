@@ -15,6 +15,7 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -26,8 +27,6 @@ SECRET_KEY = 'hmctz^ob8hc4$-_hsjsrx!+6j6ugez)7!ka#6+9%*c7cm=paw('
 DEBUG = True
 
 ALLOWED_HOSTS = ['.ngrok.io','127.0.0.1','localhost','[::1]']
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Application definition
 
