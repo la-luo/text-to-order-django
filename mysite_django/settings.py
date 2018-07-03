@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['.ngrok.io','127.0.0.1','localhost','[::1]']
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Application definition
 
