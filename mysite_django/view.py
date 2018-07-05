@@ -3,6 +3,7 @@ from django.http import Http404, HttpResponse, HttpResponseRedirect
 import datetime
 from mysite_django.forms import ContactForm
 from django.core.mail import send_mail, get_connection
+# test server side user email 
 
 def hello(request): 
     return HttpResponse("Hello world") 
