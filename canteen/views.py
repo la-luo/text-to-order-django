@@ -284,7 +284,7 @@ def sms(request):
     #     menuType = 'dinner'
     # menu_requested = Menu.objects.get(menu_type = menuType, restaurant=restaurant_requested)
     menu_requested = Menu.objects.get(restaurant=restaurant_requested)
-    menu_link = 'http://167.99.161.247:8000/menu-mobile/' + str(menu_requested.id)
+    menu_link = 'http://www.mygoodcanteen.com/menu-mobile/' + str(menu_requested.id)
 
     if conversation.last_message == None:
         mes_content = "Hi, thank you for visiting " + str(restaurant_requested.name) + ". Please text us 'd' or 'p' to inform us whether it is for delivery or pickup."
@@ -369,7 +369,7 @@ def sms(request):
 
     check_pattern = re.compile('[Cc]heck')
     if check_pattern.match(content) != None:
-        link = "http://167.99.161.247:8000/payment/" + str(conversation.id)
+        link = "http://www.mygoodcanteen.com/payment/" + str(conversation.id)
         mes_content = "Awesome, your total is " + "%.2f" % conversation.total_money + ". Please pay via this link: " + link + ' Type anything to inform us when you finish.'
         msg = resp.message(mes_content)
         conversation.last_message = 'checkout'
