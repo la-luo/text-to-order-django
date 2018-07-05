@@ -5,7 +5,7 @@ from mysite_django.forms import ContactForm
 from django.core.mail import send_mail, get_connection
 # test server side user email 
 # change server side user name
-
+# trying to find why the project show other contributot
 def hello(request): 
     return HttpResponse("Hello world") 
 
