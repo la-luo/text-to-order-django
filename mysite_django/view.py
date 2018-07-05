@@ -4,6 +4,7 @@ import datetime
 from mysite_django.forms import ContactForm
 from django.core.mail import send_mail, get_connection
 # test server side user email 
+# change server side user name
 
 def hello(request): 
     return HttpResponse("Hello world") 
