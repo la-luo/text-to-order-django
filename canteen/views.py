@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from canteen.models import Canteen, Dish, Menu, Conversation
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from canteen.forms import SignUpForm, menuForm, dishForm, resForm
 from django.contrib.auth.models import Permission, Group
 from django.contrib.auth.models import User
@@ -62,15 +63,18 @@ def menu_mobile(request, menu_ID):
 def login_view(request):
     username = request.POST.get('username', '')
     password = request.POST.get('password', '')
-    user = authenticate(username=request.POST.get('username', ''), password=request.POST.get('password', ''))
+    user = authenticate(username=username, password=password)
     if user is not None:
-        login(request, user)
+        if user.is_active:
+            request.session.set_expiry(86400)
+            login(request, user)
         return redirect(account)
         # Redirect to a success page.
         # Return an 'invalid login' error message.
     return render(request, 'registration/login.html')
 
 def logout_view(request):
+    logout(request)  # When you call logout(), the session data for the current request is completely cleaned out.
     return redirect(login_view)
 
 def signup(request):
@@ -90,6 +94,7 @@ def signup(request):
         form = SignUpForm()
     return render(request, 'registration/signup.html', {'form': form})
 
+@login_required
 def account(request):
     current_user = request.user
     user_id = current_user.id
@@ -111,6 +116,7 @@ def account(request):
     data = {'restaurant_list': restaurant_list}
     return render(request, 'registration/myAccount.html', data)
 
+@login_required
 def edit_restaurant(request, res_id):
     res = Canteen.objects.get(id = res_id)
     if request.method == 'POST':
@@ -125,6 +131,7 @@ def edit_restaurant(request, res_id):
     data = {'restaurant': res, 'form':form}
     return render(request, 'registration/edit_restaurant.html', data)
 
+@login_required
 def edit_res(request, res_id):
     res = Canteen.objects.get(id = res_id)
     if request.method == "POST":
@@ -145,6 +152,7 @@ def edit_res(request, res_id):
             return redirect(account)
     return redirect(account)
 
+@login_required
 def edit_menu_info(request, menu_id):
     menu = Menu.objects.get(id = menu_id)
     if request.method == "POST":
@@ -160,11 +168,13 @@ def edit_menu_info(request, menu_id):
             return redirect(edit_menu, menu_id= menu.id)
     return redirect(edit_menu, menu_id= menu.id)
 
+@login_required
 def delete_res(request,res_id =None):
     res = Canteen.objects.get(id=res_id)
     res.delete()
     return redirect(account)
 
+@login_required
 def edit_menu(request, menu_id):
     try:
         idx = int(menu_id)
@@ -181,6 +191,7 @@ def edit_menu(request, menu_id):
     data = {'canteen': menu.restaurant,'menu': menu, 'dish_list': dish_list,'dishtype_list': dishtype_list}
     return render(request, 'registration/edit_menu.html', data)
 
+@login_required
 def add_dishtype(request, menu_id):
     menu = Menu.objects.get(id = menu_id)
     dishtype_list = menu.get_list()
@@ -192,6 +203,7 @@ def add_dishtype(request, menu_id):
             menu.save()
     return redirect(edit_menu, menu_id= menu.id)
 
+@login_required
 def delete_dishtype(request, menu_id, dishtype):
     menu = Menu.objects.get(id = menu_id)
     dishtype_list = menu.get_list()
@@ -200,6 +212,7 @@ def delete_dishtype(request, menu_id, dishtype):
     menu.save()
     return redirect(edit_menu, menu_id= menu.id)
 
+@login_required
 def edit_dish(request, dish_id):
     dish = Dish.objects.get(id=dish_id)
     menu = dish.menu
@@ -221,6 +234,7 @@ def edit_dish(request, dish_id):
             return redirect(edit_menu, menu_id= menu_id)
     return redirect(edit_menu, menu_id= menu.id)
 
+@login_required
 def add_dish(request, menu_id):
     try:
         idx = int(menu_id)
@@ -238,6 +252,7 @@ def add_dish(request, menu_id):
         Dish.objects.create(name=dishname, price=dishprice, menu = menu, dish_type=dishtype, num = dish_num, description = dishdes)
     return redirect(edit_menu, menu_id= menu_id)
 
+@login_required
 def delete_dish(request,dish_id =None):
     dish = Dish.objects.get(id=dish_id)
     menu = dish.menu
