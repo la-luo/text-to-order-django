@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>site name - menu</title>
+        <title>Mygoodcanteen - menu</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="Site Description Here">
          {% load static %}
@@ -40,10 +40,12 @@
             </nav>
         </div>
         <div class="main-container">
-            <section id="home" class="cover height-100 imagebg parallax" data-overlay="2">
+            <section id="home" style="background: linear-gradient(90deg, #9ebd13 0%, #008552 100%);" class="cover height-100 imagebg parallax" data-overlay="2">
+                <!--
                 <div class="background-image-holder">
                     <img src="{% static 'canteen/img/blue.jpg' %}" alt="background"/>
                 </div>
+                -->
                 <div class="container pos-vertical-center">
                     <div class="row">
                         <div class="col-sm-8 col-md-7">
@@ -79,10 +81,12 @@
                 <!--end of container-->
             </section>
             {% for each_type in subtype %}
-            <section id="services" class="cover height-40 imagebg parallax" data-overlay="3" id="menu">
+            <section id="services" style="background: linear-gradient(90deg, #f8ff00 0%, #3ad59f 100%);" class="cover height-40 imagebg parallax" data-overlay="3" id="menu">
+                <!-- 
                 <div class="background-image-holder">
                     <img alt="background" src="{% static 'canteen/img/blue2.jpg' %}" />
                 </div>
+                -->
                 <div class="container pos-vertical-center">
                     <div class="row">
                         <div class="col-sm-8 col-md-6">
