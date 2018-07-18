@@ -403,6 +403,13 @@ def sms(request):
 def charge(request, conversation_id):
     stripe.api_key = "sk_test_D31hRGRmIRtbtdd7p8ZQtEtU"
     conversation = Conversation.objects.get(id = conversation_id)
+    client = Client("ACff2f802fee15e3d862ea55067969b4ce", "516a408fbb0e0dbb3c3b48cb598b8061")
+
+    message = client.messages.create(
+                                  body="test quest",
+                                  from_="+12175744192",
+                                  to="+14088068072"
+                              )
 
     data = json.loads(request.body)
     token = data["stripeToken"]  #token = data["token"]["id"]
