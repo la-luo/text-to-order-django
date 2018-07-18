@@ -28,7 +28,7 @@
                         </div>
                     </div>
                     <!--end of row-->
-                    {% if user_logged is True %}
+                    {% if user_logged == True %}
                         <div class="col-md-12 text-right text-left-xs text-left-sm">
                             <div class="bar__module">
                                 <a class="btn btn--sm type--uppercase" href="{% url "logout" %}">
