@@ -28,20 +28,37 @@
                         </div>
                     </div>
                     <!--end of row-->
-                    <div class="col-md-12 text-right text-left-xs text-left-sm">
-                        <div class="bar__module">
-                            <a class="btn btn--sm type--uppercase" href="{% url "login" %}">
-                                <span class="btn__text">
-                                        &nbsp;Log in
-                                </span>
-                            </a>
-                            <a class="btn btn--sm btn--primary type--uppercase" href="{% url "signup" %}">
-                                <span class="btn__text">
-                                        &nbsp;Sign up
-                                </span>
-                            </a>
+                    {% if user_logged is True %}
+                        <div class="col-md-12 text-right text-left-xs text-left-sm">
+                            <div class="bar__module">
+                                <a class="btn btn--sm type--uppercase" href="{% url "logout" %}">
+                                    <span class="btn__text">
+                                            &nbsp;Log out
+                                    </span>
+                                </a>
+                                <a class="btn btn--sm btn--primary type--uppercase" href="{% url "account" %}">
+                                    <span class="btn__text">
+                                            &nbsp;Account
+                                    </span>
+                                </a>
+                            </div>
                         </div>
-                    </div>
+                    {% else %}
+                        <div class="col-md-12 text-right text-left-xs text-left-sm">
+                            <div class="bar__module">
+                                <a class="btn btn--sm type--uppercase" href="{% url "login" %}">
+                                    <span class="btn__text">
+                                            &nbsp;Log in
+                                    </span>
+                                </a>
+                                <a class="btn btn--sm btn--primary type--uppercase" href="{% url "signup" %}">
+                                    <span class="btn__text">
+                                            &nbsp;Sign up
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             </nav>
             <!--end bar-->
@@ -58,7 +75,11 @@
                                     Get Food Orders from SMS 
                                 </h1>
                                 <p class="lead">
-                                    Join Us To Boost Your Business!
+                                    {% if user_logged is True %}
+                                        Hi {{ username }}, Thanks for coming back!
+                                    {% else %}
+                                        Join Us To Boost Your Business!
+                                    {% endif %}
                                 </p>
                             </div>
                         </div>
