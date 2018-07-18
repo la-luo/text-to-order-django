@@ -277,9 +277,6 @@ def payment(request, conversation_id):
     data = {'restaurant_name': conversation.restaurant, 'total_money': total_money, 'conversation': conversation_id}
     return render(request, 'canteen/charge.html', data)
 
-def check(request):
-    return render(request, 'canteen/check.html')
-
 @csrf_exempt
 def sms(request):
     content = request.POST.get('Body', '')
@@ -400,9 +397,10 @@ def sms(request):
     return HttpResponse(str(resp))
 
 @csrf_exempt
-def charge(request, conversation_id):
+def charge(request):
+    return HttpResponse(str(request.body))
     stripe.api_key = "sk_test_D31hRGRmIRtbtdd7p8ZQtEtU"
-    conversation = Conversation.objects.get(id = conversation_id)
+    #conversation = Conversation.objects.get(id = conversation_id)
     client = Client("ACff2f802fee15e3d862ea55067969b4ce", "516a408fbb0e0dbb3c3b48cb598b8061")
 
     message = client.messages.create(
@@ -429,7 +427,7 @@ def charge(request, conversation_id):
 
     client = Client("ACff2f802fee15e3d862ea55067969b4ce", "516a408fbb0e0dbb3c3b48cb598b8061")
 
-    conversation.delete()
+    #conversation.delete()
 
     message = client.messages.create(
                                   body="You order has been submitted successfully!",
