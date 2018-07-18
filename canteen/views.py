@@ -34,6 +34,7 @@ def search(request):
         	errors.append('Please enter at most 20 characters.')
         else:
             canteen = Canteen.objects.filter(name__icontains=q)
+            return render(request, 'canteen/search_results.html', {'canteen': canteen, 'query': q, 'user_logged': user_logged, 'username':username})
     return render(request, 'canteen/search_form.html', {'errors': errors, 'all_canteen': all_canteen, 'user_logged': user_logged, 'username':username})
 
 def restaurant(request, res_id):
