@@ -1,5 +1,6 @@
 # mysite_django
 Django, Python, PostgreSQL, Twilio, Stripe, Ngnix, Gunicorn, DigitalOcean <br />
+use Memcached for sessions <br />
 see deployed website on http://www.mygoodcanteen.com <br />
 developing on http://167.99.161.247:8000/<br />
 <br />
