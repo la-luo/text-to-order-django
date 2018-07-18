@@ -19,9 +19,9 @@
     token: function(token) {
       // You can access the token ID with `token.id`.
       // Get the token ID to your server-side code for use.
-        // alert(JSON.stringify(token));
+        alert(JSON.stringify(token));
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "http://167.99.161.247/charge/{{ conversation }}", true);
+        xhr.open("POST", "http://167.99.161.247/charge/{{conversation}}", true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify({
             "token":token
