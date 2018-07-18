@@ -23,7 +23,7 @@
     <body class=" ">
         <a id="start"></a>
         <div class="main-container">
-            <section id="home" style="background: linear-gradient(90deg, #3a47d5 0%, #00d2ff 100%);" class="cover height-15 imagebg parallax" data-overlay="2">
+            <section id="home" style="background: linear-gradient(90deg, #3a47d5 0%, #00d2ff 100%);" class="cover imagebg parallax" data-overlay="2">
                 <!--
                 <div class="background-image-holder">
                     <img src="{% static 'canteen/img/blue.jpg' %}" alt="background"/>
@@ -34,15 +34,13 @@
                         <div class="col-sm-8 col-md-7">
                             <h1>
                                 {% if menu %} 
-                                  <div class="title is-3">
+                                  <div class="title is-2">
                                     <strong>{{ menu.restaurant }}</strong>
                                     <br>
                                     <strong>{{ menu.name }}</strong>
+                                    <br>
                                   </div>
                                  {% endif %}
-                                 <br> 
-                                 <br> 
-                                 <br> 
                             </h1>
 
                         </div>
