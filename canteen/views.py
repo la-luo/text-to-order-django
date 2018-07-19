@@ -19,11 +19,9 @@ import json
 from twilio.rest import Client
 
 def search(request):
-    errors = []
-    user_logged = False
+    errors = []  
     username = ''
-    if request.user.is_authenticated:
-        user_logged = True
+    if request.user.is_authenticated:   
         username = request.user.username
     all_canteen = Canteen.objects.all()
     if 'q' in request.GET:
@@ -34,8 +32,8 @@ def search(request):
         	errors.append('Please enter at most 20 characters.')
         else:
             canteen = Canteen.objects.filter(name__icontains=q)
-            return render(request, 'canteen/search_results.html', {'canteen': canteen, 'query': q, 'user_logged': user_logged, 'username':username})
-    return render(request, 'canteen/search_form.html', {'errors': errors, 'all_canteen': all_canteen, 'user_logged': user_logged, 'username':username})
+            return render(request, 'canteen/search_results.html', {'canteen': canteen, 'query': q, 'username':username})
+    return render(request, 'canteen/search_form.html', {'errors': errors, 'all_canteen': all_canteen, 'username':username})
 
 def restaurant(request, res_id):
     try:
