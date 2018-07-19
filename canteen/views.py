@@ -22,7 +22,7 @@ def search(request):
     errors = []
     user_logged = False
     username = ''
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.username != '':
         user_logged = True
         username = request.user.username
     all_canteen = Canteen.objects.all()
