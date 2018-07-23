@@ -273,7 +273,7 @@ def payment(request, conversation_id):
     conversation = Conversation.objects.get(id = conversation_id)
     total_money = conversation.total_money * 100
     data = {'restaurant_name': conversation.restaurant, 'total_money': total_money, 'conversation': conversation_id}
-    return render(request, 'canteen/charge.html', data)
+    return render(request, 'canteen/payment.html', data)
 
 @csrf_exempt
 def sms(request):
@@ -281,8 +281,6 @@ def sms(request):
     income_number = request.POST.get('From')
     restaurant_number = request.POST.get('To')
     restaurant_requested = Canteen.objects.get(phone_number=restaurant_number)
-    # now = timezone.now() - datetime.timedelta(hours=7)
-    # border = now.replace(hour=2, minute=0, second=0, microsecond=0)
 
     try: 
         conversation = Conversation.objects.get(customer_phoneNum = income_number)
@@ -293,11 +291,6 @@ def sms(request):
 
     order = conversation.get_order()
 
-    # if now < border:
-    #     menuType = 'noon'
-    # else:
-    #     menuType = 'dinner'
-    # menu_requested = Menu.objects.get(menu_type = menuType, restaurant=restaurant_requested)
     menu_requested = Menu.objects.get(restaurant=restaurant_requested)
     menu_link = 'http://www.mygoodcanteen.com/menu-mobile/' + str(menu_requested.id)
 
