@@ -294,13 +294,13 @@ def sms(request):
     menu_requested = Menu.objects.get(restaurant=restaurant_requested)
     menu_link = 'http://www.mygoodcanteen.com/menu-mobile/' + str(menu_requested.id)
 
-    if conversation.last_message == None:
+    if conversation.last_message == '':
         mes_content = "Hi, thank you for visiting " + str(restaurant_requested.name) + ". Please text us 'd' or 'p' to inform us whether it is for delivery or pickup."
         msg = resp.message(mes_content)
         conversation.last_message = 'ask d or p'
         conversation.save()
         try: 
-            conversation = Conversation.objects.get(customer_phoneNum = income_number, last_message = None)
+            conversation = Conversation.objects.get(customer_phoneNum = income_number, last_message = '')
             conversation.delete()
         except:
             pass

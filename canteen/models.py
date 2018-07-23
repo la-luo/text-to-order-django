@@ -48,7 +48,7 @@ class Dish(models.Model):
     dish_type = models.CharField(max_length=20, default='food')
     name = models.CharField(max_length=100)
     price = models.FloatField(null=True)
-    description = models.CharField(max_length=100, null='Add description for this dish')
+    description = models.CharField(max_length=100, default='Add description for this dish')
     menu = models.ForeignKey(Menu, null=True)
     restaurant = models.ForeignKey(Canteen, null=True)
 
@@ -62,12 +62,12 @@ class Conversation(models.Model):
     id = models.IntegerField(primary_key=True)
     delivery = models.BooleanField(default=True)
     customer_phoneNum = models.CharField(max_length=15)
-    restaurant_phoneNum = models.CharField(max_length=15, null=True)
+    restaurant_phoneNum = models.CharField(max_length=15)
     order = models.CharField(max_length=200,  default='[]')
-    restaurant = models.ForeignKey(Canteen, null=True)
+    restaurant = models.ForeignKey(Canteen)
     total_money = models.FloatField(default = 0.0)
-    name_address = models.CharField(max_length=50, null=True)
-    last_message = models.CharField(max_length=30, null=True)
+    name_address = models.CharField(max_length=50, default='')
+    last_message = models.CharField(max_length=30, default='')
 
     def set_order(self, updated_order):
         self.order = json.dumps(updated_order)
