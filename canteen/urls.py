@@ -23,6 +23,6 @@ urlpatterns = [
     url(r'^delete/(?P<dish_id>\d+)/$', views.delete_dish, name='delete_dish_view'),
     url(r'^payment/(?P<conversation_id>\d+)/$', views.payment),
     url(r'^sms/$', views.sms),
-    url(r'^charge/$', views.charge),  # url(r'^charge/(?P<conversation_id>\d+)/$', views.charge),
+    url(r'^charge/(?P<conversation_id>\d+)/$', views.charge),
     url('^', include('django.contrib.auth.urls')),
 ]

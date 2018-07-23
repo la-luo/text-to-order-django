@@ -7,46 +7,57 @@
         <title>Checkout</title>
     </head>
 
-<body onload="checkout()">
-
+<body>
+                          <script src="https://checkout.stripe.com/checkout.js"></script>
+                        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+                        <button class="stripe-button-el" id="customButton"><span>Pay with Card</span></button>
 <script>
-  function checkout() {
-    // Open Checkout with further options:
-    var handler = StripeCheckout.configure({
-    key: 'pk_test_IeVp9JEk39LS8IJcRGjm9Ter',
-    image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
-    locale: 'auto',
-    token: function(token) {
-      // You can access the token ID with `token.id`.
-      // Get the token ID to your server-side code for use.
-        alert(JSON.stringify(token));
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "http://167.99.161.247/charge/", true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify({
-            "token":token
-          }));
-      }
-    });
 
-    var restaurant_name = "{{restaurant_name}}";
-    var total_amount = "{{total_money}}";
-    handler.open({
-      name: restaurant_name,
-      description: 'Checkout',
-      zipCode: true,
-      amount: total_amount
-    });
-      e.preventDefault();
 
-    window.addEventListener('popstate', function() {
-      handler.close();
-    });
-  };
+                              var handler = StripeCheckout.configure({
+                                key: 'pk_test_IeVp9JEk39LS8IJcRGjm9Ter',
+                                image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+                                token: function(token) {
+                                    // Use the token to create the charge with a server-side script.
+                                    // You can access the token ID with `token.id`
+                                    $.ajax({
+                                        url: 'http://167.99.161.247/charge/{{conversation}}/',
+                                        method: 'POST',
+                                        contentType: 'application/json',
+                                        data: JSON.stringify({
+                                            "stripeToken" : token.id,
+                                            "description" : "Billing",
+                                            "amount"      : getUrlParameter('amount'),
+                                            "email"       : token.email,
+                                            "zipCode"     : getUrlParameter('zipCode')
+                                        }),
+                                    });
+
+                                }
+                            });
+
+                            $('#customButton').on('click', function(e) {
+                                // Open Checkout with further options
+                                var restaurant_name = "{{restaurant_name}}";
+                                var total_amount = "{{total_money}}";
+                                handler.open({
+                                    name: restaurant_name,
+                                    description: "Billing",
+                                    zipCode: true,
+                                    amount: total_amount
+                                    //amount: getUrlParameter('amount')
+                                });
+                                e.preventDefault();
+                            });
+
+                            $('#customButton').click();
+
+                            // Close Checkout on page navigation
+                            $(window).on('popstate', function() {
+                                handler.close();
+                            });
 
 </script>
-
-<iframe allowtransparency="true" style="z-index: 2147483647; display: block; background: rgba(0, 0, 0, 0.004) none repeat scroll 0% 0%; border: 0px none transparent; overflow-x: hidden; overflow-y: auto; visibility: visible; margin: 0px; padding: 0px; position: fixed; left: 0px; top: 0px; width: 100%; height: 100%;" src="https://checkout.stripe.com/m/v3/index-5b7eb47b5e330ba7639ee7a27de2e6e5.html?distinct_id=5c4a71be-2950-da79-2311-e0adc2554be1" name="stripe_checkout_app" class="stripe_checkout_app" frameborder="0"></iframe>
 
 </body>
 </html>

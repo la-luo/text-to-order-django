@@ -273,7 +273,7 @@ def payment(request, conversation_id):
     conversation = Conversation.objects.get(id = conversation_id)
     total_money = conversation.total_money * 100
     data = {'restaurant_name': conversation.restaurant, 'total_money': total_money, 'conversation': conversation_id}
-    return render(request, 'canteen/charge.html', data)
+    return render(request, 'canteen/payment.html', data)
 
 @csrf_exempt
 def sms(request):
@@ -395,17 +395,11 @@ def sms(request):
     return HttpResponse(str(resp))
 
 @csrf_exempt
-def charge(request):
+def charge(request, conversation_id):
     return HttpResponse(str(request.body))
     stripe.api_key = "sk_test_D31hRGRmIRtbtdd7p8ZQtEtU"
-    #conversation = Conversation.objects.get(id = conversation_id)
+    conversation = Conversation.objects.get(id = conversation_id)
     client = Client("ACff2f802fee15e3d862ea55067969b4ce", "516a408fbb0e0dbb3c3b48cb598b8061")
-
-    message = client.messages.create(
-                                  body="test quest",
-                                  from_="+12175744192",
-                                  to="+14088068072"
-                              )
 
     data = json.loads(request.body)
     token = data["stripeToken"]  #token = data["token"]["id"]

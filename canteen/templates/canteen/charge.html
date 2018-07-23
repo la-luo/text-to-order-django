@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Office IQ</title>
+    <title>Checkout</title>
 
     <script type="text/javascript" async="" src="https://snap.licdn.com/li.lms-analytics/insight.min.js"></script><script async="" src="//www.google-analytics.com/analytics.js"></script><script async="" src="https://www.google-analytics.com/analytics.js"></script>
     <script type="text/javascript">
@@ -222,7 +222,7 @@
                                     // Use the token to create the charge with a server-side script.
                                     // You can access the token ID with `token.id`
                                     $.ajax({
-                                        url: 'http://167.99.161.247:8000/charge/{{conversation}}/',
+                                        url: 'http://167.99.161.247/charge/{{conversation}}/',
                                         method: 'POST',
                                         contentType: 'application/json',
                                         data: JSON.stringify({
