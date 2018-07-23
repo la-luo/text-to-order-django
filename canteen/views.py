@@ -273,7 +273,7 @@ def payment(request, conversation_id):
     conversation = Conversation.objects.get(id = conversation_id)
     total_money = conversation.total_money * 100
     data = {'restaurant_name': conversation.restaurant, 'total_money': total_money, 'conversation': conversation_id}
-    return render(request, 'canteen/payment.html', data)
+    return render(request, 'canteen/charge.html', data)
 
 @csrf_exempt
 def sms(request):
