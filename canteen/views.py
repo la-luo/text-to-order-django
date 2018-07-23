@@ -285,7 +285,7 @@ def sms(request):
     try: 
         conversation = Conversation.objects.get(customer_phoneNum = income_number)
     except:
-        conversation = Conversation(customer_phoneNum = income_number, restaurant_phoneNum=restaurant_number, restaurant = restaurant_requested)
+        conversation = Conversation(customer_phoneNum = income_number, restaurant_phoneNum=restaurant_number, restaurant = restaurant_requested, name_address='', last_message='')
         conversation.save()
 
     resp = MessagingResponse()
