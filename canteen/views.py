@@ -252,7 +252,8 @@ def add_dish(request, menu_id):
         dishprice = request.POST.get('dishprice', '')
         dishtype = request.POST.get('dropdown', '')
         dishdes = request.POST.get('dishdes', '')
-        Dish.objects.create(name=dishname, price=dishprice, menu = menu, dish_type=dishtype, num = dish_num, description = dishdes)
+        dish_id = Dish.objects.count() + 1
+        Dish.objects.create(id = dish_id, num = dish_num, dish_type=dishtype, name=dishname, price=dishprice, menu = menu, description = dishdes, restaurant = menu.restaurant)
     return redirect(edit_menu, menu_id= menu_id)
 
 @login_required
@@ -289,7 +290,6 @@ def sms(request):
     except:
         con_id = Conversation.objects.count() + 1
         conversation = Conversation.objects.create(id= con_id, customer_phoneNum = income_number, restaurant_phoneNum=restaurant_number, restaurant = restaurant_requested, name_address='x', last_message='x')
-        conversation.save()
 
     order = conversation.get_order()
 
@@ -301,11 +301,6 @@ def sms(request):
         msg = resp.message(mes_content)
         conversation.last_message = 'ask d or p'
         conversation.save()
-        try: 
-            conversation = Conversation.objects.get(customer_phoneNum = income_number, last_message = '')
-            conversation.delete()
-        except:
-            pass
         return HttpResponse(str(resp))
 
     if conversation.last_message == 'ask d or p':
