@@ -287,7 +287,7 @@ def sms(request):
     try: 
         conversation = Conversation.objects.get(customer_phoneNum = income_number)
     except:
-        con_id = int(income_number[:-2])
+        con_id = Conversation.objects.count() + 1
         conversation = Conversation.objects.create(id= con_id, customer_phoneNum = income_number, restaurant_phoneNum=restaurant_number, restaurant = restaurant_requested, name_address='x', last_message='x')
         conversation.save()
 
@@ -397,7 +397,7 @@ def charge(request, conversation_id):
     data = json.loads(request.body)
     token = data["stripeToken"]  #token = data["token"]["id"]
     email = data["email"]
-    amount = 1000
+    amount = conversation.total_money * 100
 
     customer = stripe.Customer.create(
       source=token,  # source='tok_mastercard',
@@ -417,8 +417,8 @@ def charge(request, conversation_id):
 
     message = client.messages.create(
                                   body="You order has been submitted successfully!",
-                                  from_="+12175744192",
-                                  to="+14088068072"
+                                  from_=conversation.restaurant_phoneNum,
+                                  to=conversation.customer_phoneNum
                               )
 
     # return HttpResponse(str(request.body))

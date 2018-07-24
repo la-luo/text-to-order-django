@@ -5,6 +5,122 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-type" content="text/html; charset=utf-8" /> 
         <title>Checkout</title>
+        <style>
+    .stripe-button-el span {
+        display: block;
+        position: relative;
+        padding: 0 12px;
+        height: 30px;
+        line-height: 30px;
+        background: #1275ff;
+        background-image: -webkit-linear-gradient(#7dc5ee,#008cdd 85%,#30a2e4);
+        background-image: -moz-linear-gradient(#7dc5ee,#008cdd 85%,#30a2e4);
+        background-image: -ms-linear-gradient(#7dc5ee,#008cdd 85%,#30a2e4);
+        background-image: -o-linear-gradient(#7dc5ee,#008cdd 85%,#30a2e4);
+        background-image: -webkit-linear-gradient(#7dc5ee,#008cdd 85%,#30a2e4);
+        background-image: -moz-linear-gradient(#7dc5ee,#008cdd 85%,#30a2e4);
+        background-image: -ms-linear-gradient(#7dc5ee,#008cdd 85%,#30a2e4);
+        background-image: -o-linear-gradient(#7dc5ee,#008cdd 85%,#30a2e4);
+        background-image: linear-gradient(#7dc5ee,#008cdd 85%,#30a2e4);
+        font-size: 14px;
+        color: #fff;
+        font-weight: bold;
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+        -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,0.25);
+        -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,0.25);
+        -ms-box-shadow: inset 0 1px 0 rgba(255,255,255,0.25);
+        -o-box-shadow: inset 0 1px 0 rgba(255,255,255,0.25);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.25);
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        -ms-border-radius: 4px;
+        -o-border-radius: 4px;
+        border-radius: 4px;
+    }
+    .stripe-button-el {
+        overflow: hidden;
+        display: inline-block;
+        visibility: visible !important;
+        background-image: -webkit-linear-gradient(#28a0e5,#015e94);
+        background-image: -moz-linear-gradient(#28a0e5,#015e94);
+        background-image: -ms-linear-gradient(#28a0e5,#015e94);
+        background-image: -o-linear-gradient(#28a0e5,#015e94);
+        background-image: -webkit-linear-gradient(#28a0e5,#015e94);
+        background-image: -moz-linear-gradient(#28a0e5,#015e94);
+        background-image: -ms-linear-gradient(#28a0e5,#015e94);
+        background-image: -o-linear-gradient(#28a0e5,#015e94);
+        background-image: linear-gradient(#28a0e5,#015e94);
+        -webkit-font-smoothing: antialiased;
+        border: 0;
+        padding: 1px;
+        text-decoration: none;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        -ms-border-radius: 5px;
+        -o-border-radius: 5px;
+        border-radius: 5px;
+        -webkit-box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+        -moz-box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+        -ms-box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+        -o-box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+        box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+        -webkit-touch-callout: none;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -o-user-select: none;
+        user-select: none;
+        cursor: pointer;
+    }
+    #reviews h2 {
+        font-size: 22px;
+        font-weight: 300;
+    }
+    #reviews h1{
+        font-weight:normal;
+        font-size:29px;
+        margin-bottom:5px;
+    }
+    body {
+        background: linear-gradient(rgb(91, 202, 255), rgb(85, 239, 203));
+        box-shadow: 0px 0px 100px #277198 inset;
+    }
+    html, body {
+      float: left;
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    #reviews{
+          top: 50%;
+          position: absolute;
+          width: 100%;
+          margin-top: -160px;
+    }
+    #reviews h1, #reviews h2 {
+        color: #ffffff;
+        text-align: center;
+        font-family: "proxima-nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        margin-top:0px;
+        margin-bottom: 5px;
+    }
+    #customButton, #reviews img {
+        margin: 0 auto;
+        display: block;
+    }
+    #logo{
+        padding-bottom: 70px;
+        width: 75px;
+        height: 75px;
+    }
+    #copyright{
+        font-size: 15px;background: #0e8dbc;font-family:"proxima-nova", "Helvetica Neue", Helvetica, Arial, sans-serif;color: white;float:left; width:100%;text-align:center;position: absolute;bottom: 0;
+    }
+    </style>
+
     </head>
 
 <body>
@@ -12,7 +128,19 @@
                         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
                         <button class="stripe-button-el" id="customButton"><span>Pay with Card</span></button>
 <script>
-
+                            function getUrlParameter(sParam)
+                            {
+                                var sPageURL = window.location.search.substring(1);
+                                var sURLVariables = sPageURL.split('&');
+                                for (var i = 0; i < sURLVariables.length; i++)
+                                {
+                                    var sParameterName = sURLVariables[i].split('=');
+                                    if (sParameterName[0] == sParam)
+                                    {
+                                        return sParameterName[1];
+                                    }
+                                }
+                            }
 
                               var handler = StripeCheckout.configure({
                                 key: 'pk_test_IeVp9JEk39LS8IJcRGjm9Ter',
