@@ -282,20 +282,21 @@ def sms(request):
     restaurant_number = request.POST.get('To')
     restaurant_requested = Canteen.objects.get(phone_number=restaurant_number)
 
+    resp = MessagingResponse()
+    
     try: 
         conversation = Conversation.objects.get(customer_phoneNum = income_number)
     except:
-        conversation = Conversation(customer_phoneNum = income_number, restaurant_phoneNum=restaurant_number, restaurant = restaurant_requested, name_address='', last_message='')
+        con_id = int(income_number[:-2])
+        conversation = Conversation.objects.create(id= con_id, customer_phoneNum = income_number, restaurant_phoneNum=restaurant_number, restaurant = restaurant_requested, name_address='x', last_message='x')
         conversation.save()
-
-    resp = MessagingResponse()
 
     order = conversation.get_order()
 
     menu_requested = Menu.objects.get(restaurant=restaurant_requested)
     menu_link = 'http://www.mygoodcanteen.com/menu-mobile/' + str(menu_requested.id)
 
-    if conversation.last_message == '':
+    if conversation.last_message == 'x':
         mes_content = "Hi, thank you for visiting " + str(restaurant_requested.name) + ". Please text us 'd' or 'p' to inform us whether it is for delivery or pickup."
         msg = resp.message(mes_content)
         conversation.last_message = 'ask d or p'
@@ -411,7 +412,8 @@ def charge(request, conversation_id):
 
     client = Client("ACff2f802fee15e3d862ea55067969b4ce", "516a408fbb0e0dbb3c3b48cb598b8061")
 
-    conversation.delete()
+    conversation.last_message = 'x'
+    conversation.save()
 
     message = client.messages.create(
                                   body="You order has been submitted successfully!",
