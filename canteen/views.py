@@ -375,7 +375,7 @@ def sms(request):
     check_pattern = re.compile('[Cc]heck')
     if check_pattern.match(content) != None:
         link = "http://www.mygoodcanteen.com/payment/" + str(conversation.id)
-        mes_content = "Awesome, your total is " + "%.2f" % conversation.total_money + ". Please pay via this link: " + link + ' Type anything to inform us when you finish.'
+        mes_content = "Awesome, your total is " + "%.2f" % conversation.total_money + ". Please pay via this link: " + link + ' You will receive a meesage informing successful payment.'
         msg = resp.message(mes_content)
         conversation.last_message = 'checkout'
         conversation.save()
