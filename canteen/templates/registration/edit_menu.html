@@ -154,6 +154,7 @@
                             Description: &nbsp;{{ each.description }}   
                           </p>
                       <form action="/edit-dish/{{ each.id }}/" method="post"> 
+                                {% csrf_token %}
                                 <div class="col-sm-12">
                                     <textarea rows="4" name="newdes" placeholder="New Description"></textarea>
                                 </div>
