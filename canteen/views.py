@@ -392,7 +392,7 @@ def charge(request, conversation_id):
     data = json.loads(request.body)
     token = data["stripeToken"]  #token = data["token"]["id"]
     email = data["email"]
-    amount = conversation.total_money * 100
+    amount = 1000
 
     customer = stripe.Customer.create(
       source=token,  # source='tok_mastercard',
@@ -408,6 +408,8 @@ def charge(request, conversation_id):
     client = Client("ACff2f802fee15e3d862ea55067969b4ce", "516a408fbb0e0dbb3c3b48cb598b8061")
 
     conversation.last_message = 'x'
+    conversation.total_money = 0.0
+    conversation.order = '[]'
     conversation.save()
 
     message = client.messages.create(
