@@ -392,7 +392,7 @@ def charge(request, conversation_id):
     data = json.loads(request.body)
     token = data["stripeToken"]  #token = data["token"]["id"]
     email = data["email"]
-    amount = 1000
+    amount = int(conversation.total_money * 100)
 
     customer = stripe.Customer.create(
       source=token,  # source='tok_mastercard',
