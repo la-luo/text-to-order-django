@@ -234,7 +234,7 @@ def edit_dish(request, dish_id):
         if newdes is not '':
             dish.description = newdes
             dish.save()
-            return redirect(edit_menu, menu_id= menu_id)
+            return redirect(edit_menu, menu_id= menu.id)
     return redirect(edit_menu, menu_id= menu.id)
 
 @login_required
