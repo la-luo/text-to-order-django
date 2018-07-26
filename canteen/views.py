@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
 from twilio.twiml.messaging_response import MessagingResponse
+from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 import datetime
 from django.utils import timezone
@@ -39,7 +40,7 @@ def restaurant(request, res_id):
     try:
         idx = int(res_id)
         res = Canteen.objects.get(id = idx)
-    except ValueError:
+    except ObjectDoesNotExist:
         raise Http404()
     return render(request, 'canteen/restaurant.html', {'res': res})
 
@@ -47,7 +48,7 @@ def menu(request, menu_ID):
     try:
         idx = int(menu_ID)
         menu = Menu.objects.get(id = idx)
-    except ValueError:
+    except ObjectDoesNotExist:
         raise Http404()
     dish_list = Dish.objects.filter(menu_id=idx)
     subtype_list = menu.get_list()
@@ -57,7 +58,7 @@ def menu_mobile(request, menu_ID):
     try:
         idx = int(menu_ID)
         menu = Menu.objects.get(id = idx)
-    except ValueError:
+    except ObjectDoesNotExist:
         raise Http404()
     dish_list = Dish.objects.filter(menu_id=idx)
     subtype_list = menu.get_list()
@@ -182,7 +183,7 @@ def edit_menu(request, menu_id):
     try:
         idx = int(menu_id)
         menu = Menu.objects.get(id = idx)
-    except ValueError:
+    except ObjectDoesNotExist:
         raise Http404()
     dish_list = Dish.objects.filter(menu=menu)
     type_list = menu.get_list()
@@ -242,7 +243,7 @@ def add_dish(request, menu_id):
     try:
         idx = int(menu_id)
         menu = Menu.objects.get(id = idx)
-    except ValueError:
+    except ObjectDoesNotExist:
         raise Http404()
     dish_list = Dish.objects.filter(menu=menu)
     type_list = menu.get_list()
