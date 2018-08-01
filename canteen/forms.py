@@ -48,6 +48,11 @@ class SignUpForm(forms.ModelForm):
             user.save()
         return user
 
+class ContactForm(forms.Form):
+    name = forms.CharField(max_length=20)
+    from_email = forms.EmailField()
+    message = forms.CharField(widget=forms.Textarea)
+
 class resForm(forms.ModelForm):
     res_name = forms.CharField(max_length=30, required=True,  widget=forms.TextInput(attrs={'placeholder': 'Restaurant name', 'style': 'width:400px'}))
     res_number = forms.CharField(max_length=12, required=True,  widget=forms.TextInput(attrs={'placeholder': 'Restaurant number', 'style': 'width:200px'}))

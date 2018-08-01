@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>mygoodcanteen - join us</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Site Description Here">
+         {% load static %}
+        <link href="{% static 'canteen/css/bootstrap.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/stack-interface.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/socicon.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/lightbox.min.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/flickity.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/iconsmind.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/jquery.steps.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/theme.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="{% static 'canteen/css/custom.css' %}" rel="stylesheet" type="text/css" media="all" />
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:200,300,400,400i,500,600,700%7CMerriweather:300,300i" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    </head>
+    <body class=" ">
+        <a id="start"></a>
+        <div class="nav-container ">
+            <nav id="menu1" class="bar bar--sm bar-1 hidden-xs bar--transparent bar--absolute">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-3 text-right text-left-xs text-left-sm">
+                            <div class="bar__module">
+                                <ul class="menu-horizontal text-left">
+                                    <a href="{% url "home_view" %}"><strong>Home</strong> </a> | <a href="">Join Us</a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end of row-->
+                </div>
+            </nav>
+        </div>
+        <div class="main-container">
+            <section class="switchable ">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <img alt="Image" class="border--round box-shadow-wide" src="{% static 'canteen/img/signup.jpg' %}" />
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="row switchable__text">
+                                <p class="lead">
+                                    E:
+                                    <a href="#">hello@mygoodcanteen.com</a>
+                                    <br /> P: +888 8888 8888
+                                </p>
+                                <p class="lead">
+                                    Willing to join us? Send us a message about your business and let's work together!
+                                </p>
+                                <p class="lead">
+                                    We are open from 9am &mdash; 6pm week days.
+                                </p>
+                                <hr class="short">
+                                <div class="row">
+                                    <!--<form action="" method="post" class="form-email" data-success="Thanks for your enquiry, we'll be in touch shortly." data-error="Please fill in all fields correctly." data-recaptcha-sitekey="6LewhCIUAAAAACSwFvBDhgtTbw6EnW6e9dip8o2u" data-recaptcha-theme="light">-->
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <div class="col-sm-6">
+                                            <label>Your Name:</label>
+                                            {{ form.name }}
+                                           <!-- <input type="text" name="Name" class="validate-required" />-->
+                                        </div> 
+                                        <div class="col-sm-6">
+                                            <label>Email Address:</label>
+                                            {{ form.from_email }}
+                                            <!--<input type="email" name="email" class="validate-required validate-email" />-->
+                                        </div> 
+                                        <div class="col-sm-12">
+                                            <label>Message:</label>
+                                            {{ form.message }}
+                                            <!--<textarea rows="4" name="Message" class="validate-required"></textarea> -->
+                                        </div>
+                                        <div class="col-sm-5 col-md-4">
+                                            <button type="submit" class="btn btn--primary type--uppercase">Send Enquiry</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!--end of row-->
+                            </div>
+                            <!--end of row-->
+                        </div>
+                    </div>
+                    <!--end of row-->
+                </div>
+                <!--end of container-->
+            </section>
+        <a class="back-to-top inner-link" href="#start" data-scroll-class="100vh:active">
+            <i class="stack-interface stack-up-open-big"></i>
+        </a>
+        <script src="{% static 'canteen/js/jquery-3.1.1.min.js' %}"></script>
+        <script src="{% static 'canteen/js/flickity.min.js' %}"></script>
+        <script src="{% static 'canteen/js/easypiechart.min.js' %}"></script>
+        <script src="{% static 'canteen/js/parallax.js' %}"></script>
+        <script src="{% static 'canteen/js/typed.min.js' %}"></script>
+        <script src="{% static 'canteen/js/datepicker.js' %}"></script>
+        <script src="{% static 'canteen/js/isotope.min.js' %}"></script>
+        <script src="{% static 'canteen/js/ytplayer.min.js' %}"></script>
+        <script src="{% static 'canteen/js/lightbox.min.js' %}"></script>
+        <script src="{% static 'canteen/js/granim.min.js' %}"></script>
+        <script src="{% static 'canteen/js/jquery.steps.min.js' %}"></script>
+        <script src="{% static 'canteen/js/countdown.min.js' %}"></script>
+        <script src="{% static 'canteen/js/twitterfetcher.min.js' %}"></script>
+        <script src="{% static 'canteen/js/spectragram.min.js' %}"></script>
+        <script src="{% static 'canteen/js/smooth-scroll.min.js' %}"></script>
+        <script src="{% static 'canteen/js/scripts.js' %}"></script>
+    </body>
+</html>

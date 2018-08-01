@@ -3,7 +3,7 @@ from django.http import Http404, HttpResponse, HttpResponseRedirect
 from canteen.models import Canteen, Dish, Menu, Conversation
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from canteen.forms import SignUpForm, menuForm, dishForm, resForm
+from canteen.forms import SignUpForm, menuForm, dishForm, resForm, ContactForm
 from django.contrib.auth.models import Permission, Group
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -18,6 +18,8 @@ import re
 import stripe
 import json
 from twilio.rest import Client
+from django.core.mail import send_mail, BadHeaderError
+
 
 def search(request):
     errors = []  
@@ -81,22 +83,26 @@ def logout_view(request):
     logout(request)  # When you call logout(), the session data for the current request is completely cleaned out.
     return redirect(login_view)
 
-def signup(request):
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            email = form.cleaned_data.get('email')
-            valid_password = form.clean_password()
-            user = authenticate(username=username, password=valid_password, email=email)
-            if user:
-                user = form.save()
-                user.groups.add(Group.objects.get(name='restaurant manager'))
-            login(request, user)
-            return redirect(account)
+def join_us(request):
+    if request.method == 'GET':
+        form = ContactForm()
     else:
-        form = SignUpForm()
-    return render(request, 'registration/signup.html', {'form': form})
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            from_email = form.cleaned_data['from_email']
+            message = form.cleaned_data['message']
+            try:
+                send_mail(name, message, from_email, ['rola.uiuc@gmail.com'])
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
+            return redirect('success')
+
+    return render(request, 'registration/join_us.html', {'form': form})
+
+def success_view(request):
+    return HttpResponse('Success! Thank you for your message.')
+
 
 @login_required
 def account(request):
@@ -418,6 +424,25 @@ def charge(request, conversation_id):
                                   from_=conversation.restaurant_phoneNum,
                                   to=conversation.customer_phoneNum
                               )
+
+'''
+def signup(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            email = form.cleaned_data.get('email')
+            valid_password = form.clean_password()
+            user = authenticate(username=username, password=valid_password, email=email)
+            if user:
+                user = form.save()
+                user.groups.add(Group.objects.get(name='restaurant manager'))
+            login(request, user)
+            return redirect(account)
+    else:
+        form = SignUpForm()
+    return render(request, 'registration/signup.html', {'form': form})
+    '''
 
     # return HttpResponse(str(request.body))
 
