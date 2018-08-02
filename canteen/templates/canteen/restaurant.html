@@ -52,11 +52,8 @@
             </nav>
         </div>
         <div class="main-container">
-            <section id="home" class="cover height-100 imagebg parallax" data-overlay="2">
-                <div class="background-image-holder">
-                    <img src="{% static 'canteen/img/restaurant.jpg' %}" alt="background"/>
-                </div>
-                <div class="container pos-vertical-center">
+            <section id="home" style="background: linear-gradient(#434343 0%, #000000 100%);" class="cover height-55 imagebg parallax" data-overlay="2">
+                <div class="container">
                     <div class="row">
                         <div class="col-sm-8 col-md-7">
                             <h1>
@@ -66,6 +63,12 @@
                                   </div>
                                  {% endif %} 
                             </h1>
+                            <h3>
+                                <div class="title is-3">
+                                    <span>Address: {{ res.address }}</span> <br>
+                                    <span>Text Number: {{ res.phone_number }}</span>
+                                  </div>
+                            </h3>
 <!--                             <a class="btn btn--primary type--uppercase inner-link" href="#menu">
                                 <span class="btn__text">
                                     Explore The Menu
@@ -116,28 +119,6 @@
                 <!--end of container-->
             </section>
 
-            <section id="contact" class="imageblock switchable feature-large space--lg">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-5 col-sm-7">
-                            <h3>Address: {{ res.address }}</h3>
-                            <p class="lead">
-                                E:
-                                <a href="#">hello@stack.net</a>
-                                <br /> Call: {{ res.phone_number }}
-                            </p>
-                            <p class="lead">
-                                Give us a call or drop by anytime, we endeavour to answer all enquiries within 24 hours on business days.
-                            </p>
-                            <p class="lead">
-                                We are open from 9am &mdash; 8pm week days.
-                            </p>
-                        </div>
-                    </div>
-                    <!--end of row-->
-                </div>
-                <!--end of container-->
-            </section>
              <footer class="space--sm footer-1 text-center-xs bg--dark ">
                 <div class="container">
                     <div class="row">
