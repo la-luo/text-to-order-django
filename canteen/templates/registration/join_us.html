@@ -58,7 +58,13 @@
                                 </p>
                                 <hr class="short">
                                 <div class="row">
-                                    <!--<form action="" method="post" class="form-email" data-success="Thanks for your enquiry, we'll be in touch shortly." data-error="Please fill in all fields correctly." data-recaptcha-sitekey="6LewhCIUAAAAACSwFvBDhgtTbw6EnW6e9dip8o2u" data-recaptcha-theme="light">-->
+                                    {% if messages %}
+                                      <ul class="alert bg-success">
+                                        {% for message in messages %}
+                                          <li class="{{ message.tags }}">{{ message }}</li>
+                                        {% endfor %}
+                                      </ul>
+                                    {% endif %}
                                     <form action="" method="post">
                                         {% csrf_token %}
                                         <div class="col-sm-6">
@@ -80,6 +86,7 @@
                                             <button type="submit" class="btn btn--primary type--uppercase">Send Enquiry</button>
                                         </div>
                                     </form>
+
                                 </div>
                                 <!--end of row-->
                             </div>

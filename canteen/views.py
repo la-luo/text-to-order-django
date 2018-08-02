@@ -19,6 +19,7 @@ import stripe
 import json
 from twilio.rest import Client
 from django.core.mail import send_mail, BadHeaderError
+from django.contrib import messages
 
 
 def search(request):
@@ -96,8 +97,9 @@ def join_us(request):
                 send_mail(name, message, from_email, ['rola.uiuc@gmail.com'])
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')
-            return redirect('success')
-
+            messages.success(request, 'Your enquiry was sent successfully!')  # return redirect('success')
+        else:
+            messages.warning(request, 'Please fill the form correctly.') 
     return render(request, 'registration/join_us.html', {'form': form})
 
 def success_view(request):
