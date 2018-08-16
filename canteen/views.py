@@ -65,7 +65,9 @@ def menu_mobile(request, menu_ID):
         raise Http404()
     dish_list = Dish.objects.filter(menu_id=idx)
     subtype_list = menu.get_list()
-    return render(request, 'canteen/menu_mobile.html', {'canteen': menu.restaurant,'menu': menu, 'dish_list': dish_list, 'subtype': subtype_list})
+    res = menu.restaurant
+    res_phone = res.phone_number
+    return render(request, 'canteen/menu_mobile.html', {'canteen': res,'menu': menu, 'dish_list': dish_list, 'subtype': subtype_list, 'res_phone': res_phone})
 
 def login_view(request):
     username = request.POST.get('username', '')
@@ -81,7 +83,7 @@ def login_view(request):
     return render(request, 'registration/login.html')
 
 def logout_view(request):
-    logout(request)  # When you call logout(), the session data for the current request is completely cleaned out.
+    logout(request)  
     return redirect(login_view)
 
 def join_us(request):
@@ -97,7 +99,7 @@ def join_us(request):
                 send_mail(name, message, from_email, ['rola.uiuc@gmail.com'])
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')
-            messages.success(request, 'Your enquiry was sent successfully!')  # return redirect('success')
+            messages.success(request, 'Your enquiry was sent successfully!')  
         else:
             messages.warning(request, 'Please fill the form correctly.') 
     return render(request, 'registration/join_us.html', {'form': form})
@@ -346,7 +348,7 @@ def sms(request):
             conversation.total_money = conversation.total_money + new_dish.price
             order.append(new_dish.name)
             conversation.set_order(order)
-            conversation.save()     # database would not be updated without .save()!
+            conversation.save()     
             ordered_list = ''
             for each in order:
                 ordered_list += each + ', '
@@ -399,12 +401,12 @@ def charge(request, conversation_id):
     conversation = Conversation.objects.get(id = conversation_id)
 
     data = json.loads(request.body)
-    token = data["stripeToken"]  #token = data["token"]["id"]
+    token = data["stripeToken"]  
     email = data["email"]
     amount = int(conversation.total_money * 100)
 
     customer = stripe.Customer.create(
-      source=token,  # source='tok_mastercard',
+      source=token,  
       email=email,
     )
 
@@ -427,51 +429,3 @@ def charge(request, conversation_id):
                                   to=conversation.customer_phoneNum
                               )
 
-'''
-def signup(request):
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            email = form.cleaned_data.get('email')
-            valid_password = form.clean_password()
-            user = authenticate(username=username, password=valid_password, email=email)
-            if user:
-                user = form.save()
-                user.groups.add(Group.objects.get(name='restaurant manager'))
-            login(request, user)
-            return redirect(account)
-    else:
-        form = SignUpForm()
-    return render(request, 'registration/signup.html', {'form': form})
-    '''
-
-    # return HttpResponse(str(request.body))
-
-
-        # if conversation.last_message == 'checkout':
-    #     mes_content = "Thank you for paying, please give us your address for delivery. What is your street address:"
-    #     msg = resp.message(mes_content)
-    #     conversation.last_message = 'street address received'
-    #     conversation.save()
-    #     return HttpResponse(str(resp))
-
-    # if conversation.last_message == 'street address received':
-    #     mes_content = "What is your city:"
-    #     msg = resp.message(mes_content)
-    #     conversation.last_message = 'city received'
-    #     conversation.save()
-    #     return HttpResponse(str(resp))
-
-    # if conversation.last_message == 'city received':
-    #     mes_content = "What is your state:"
-    #     msg = resp.message(mes_content)
-    #     conversation.last_message = 'state received'
-    #     conversation.save()
-    #     return HttpResponse(str(resp))
-
-    # if conversation.last_message == 'state received':
-    #     mes_content = "Thank you, your delivery order is submitted"
-    #     msg = resp.message(mes_content)
-    #     conversation.delete()
-    #     return HttpResponse(str(resp))
