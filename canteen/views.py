@@ -66,8 +66,7 @@ def menu_mobile(request, menu_ID):
     dish_list = Dish.objects.filter(menu_id=idx)
     subtype_list = menu.get_list()
     res = menu.restaurant
-    res_phone = res.phone_number[1:]
-    return render(request, 'canteen/menu_mobile.html', {'canteen': res,'menu': menu, 'dish_list': dish_list, 'subtype': subtype_list, 'res_phone': res_phone})
+    return render(request, 'canteen/menu_mobile.html', {'canteen': res, 'menu': menu, 'dish_list': dish_list, 'subtype': subtype_list})
 
 def login_view(request):
     username = request.POST.get('username', '')
