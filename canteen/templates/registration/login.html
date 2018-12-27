@@ -59,8 +59,15 @@
                                     <div class="col-sm-12">
                                         <input type="password" name="password" placeholder="Password" />
                                     </div>
-                                    <div class="col-sm-12">
+                                    <div class="col-sm-6">
                                         <button class="btn btn--primary type--uppercase" type="submit">Login</button>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <button class="btn btn--primary type--uppercase" 
+                                                type="submit" 
+                                                onclick="this.form.username.value = 'TestUser';
+                                                         this.form.password.value = 'testuser';
+                                                         this.form.submit();">Guest Login</button>
                                     </div>
                                 </div>
                                 <!--end of row-->

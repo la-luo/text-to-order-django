@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 import json
 
 class Canteen(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=30)
     manager = models.ForeignKey(User, related_name='manager', null=True)
     address = models.CharField(max_length=50, null=True)
@@ -14,14 +14,14 @@ class Canteen(models.Model):
 
     @property
     def get_menu(self):
-        menu_list = Menu.objects.filter(restaurant = self)
+        menu_list = Menu.objects.filter(restaurant=self)
         return menu_list
 
     class Meta:
     	ordering = ['name']
 
 class Menu(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=30)
     info = models.CharField(max_length = 200, null=True)
     last_updated = models.DateTimeField(auto_now_add=True)
@@ -43,7 +43,7 @@ class Menu(models.Model):
         return dish_list
 
 class Dish(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     num = models.IntegerField(null=True)
     dish_type = models.CharField(max_length=20, default='food')
     name = models.CharField(max_length=100)
@@ -59,12 +59,12 @@ class Dish(models.Model):
         ordering = ['id']
 
 class Conversation(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     delivery = models.BooleanField(default=True)
-    customer_phoneNum = models.CharField(max_length=15)
-    restaurant_phoneNum = models.CharField(max_length=15)
+    customer_phoneNum = models.CharField(max_length=15, null=True)
+    restaurant_phoneNum = models.CharField(max_length=15, null=True)
     order = models.CharField(max_length=200,  default='[]')
-    restaurant = models.ForeignKey(Canteen)
+    restaurant = models.ForeignKey(Canteen, null=True)
     total_money = models.FloatField(default = 0.0)
     name_address = models.CharField(max_length=50, default='')
     last_message = models.CharField(max_length=30, default='')
@@ -74,3 +74,9 @@ class Conversation(models.Model):
 
     def get_order(self):
         return json.loads(self.order)
+
+class Customer(models.Model):
+    id = models.AutoField(primary_key=True)
+    phone_number = models.CharField(max_length=15)
+    address = models.CharField(max_length=200, default='')
+

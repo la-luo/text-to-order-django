@@ -262,8 +262,7 @@ def add_dish(request, menu_id):
         dishprice = request.POST.get('dishprice', '')
         dishtype = request.POST.get('dropdown', '')
         dishdes = request.POST.get('dishdes', '')
-        dish_id = Dish.objects.count() + 1
-        Dish.objects.create(id = dish_id, num = dish_num, dish_type=dishtype, name=dishname, price=dishprice, menu = menu, description = dishdes, restaurant = menu.restaurant)
+        Dish.objects.create(num = dish_num, dish_type=dishtype, name=dishname, price=dishprice, menu = menu, description = dishdes, restaurant = menu.restaurant)
     return redirect(edit_menu, menu_id= menu_id)
 
 @login_required
@@ -292,21 +291,30 @@ def sms(request):
     income_number = request.POST.get('From')
     restaurant_number = request.POST.get('To')
     restaurant_requested = Canteen.objects.get(phone_number=restaurant_number)
-
+    customer = None
     resp = MessagingResponse()
     
     try: 
         conversation = Conversation.objects.get(customer_phoneNum = income_number)
     except:
-        con_id = Conversation.objects.count() + 1
-        conversation = Conversation.objects.create(id= con_id, customer_phoneNum = income_number, restaurant_phoneNum=restaurant_number, restaurant = restaurant_requested, name_address='x', last_message='x')
+        try:
+            customer = Customer.objects.get(phone_number=income_number)
+        except ObjectDoesNotExist:
+            customer = None 
+        if customer:
+            customer = Customer.objects.get(phone_number=income_number)
+            conversation = Conversation.objects.create(customer_phoneNum=income_number, restaurant_phoneNum=restaurant_number, restaurant=restaurant_requested, name_address=customer.address, last_message='')
+        else:
+            customer = Customer.objects.create(phone_number=income_number, address='')
+            conversation = Conversation.objects.create(customer_phoneNum=income_number, restaurant_phoneNum=restaurant_number, restaurant=restaurant_requested, name_address='', last_message='')
+
 
     order = conversation.get_order()
 
     menu_requested = Menu.objects.get(restaurant=restaurant_requested)
     menu_link = 'http://www.mygoodcanteen.com/menu-mobile/' + str(menu_requested.id)
 
-    if conversation.last_message == 'x':
+    if conversation.last_message == '':
         mes_content = "Hi, thank you for visiting " + str(restaurant_requested.name) + ". Please text us 'd' or 'p' to inform us whether it is for delivery or pickup."
         msg = resp.message(mes_content)
         conversation.last_message = 'ask d or p'
@@ -315,7 +323,10 @@ def sms(request):
 
     if conversation.last_message == 'ask d or p':
         if ('d' in content) or ('D' in content):
-            mes_content = "You choose delivery! Please text us your address. The format should be 'Street address, City, State Zip code', for example, '833 Bridle Avenue, San Jose, CA 95111'."
+            if customer.address != '':
+                mes_content = "You choose delivery! Your saved address is " + customer.address + ". Please type 'Y' to comfirm it or text us your new address:"
+            else:
+                mes_content = "You choose delivery! Please text us your address. The format should be 'Street address, City, State Zip code', for example, '833 Bridle Avenue, San Jose, CA 95111'."
             msg = resp.message(mes_content)
             conversation.last_message = 'received d'
             conversation.save()
@@ -331,11 +342,15 @@ def sms(request):
         msg = resp.message(mes_content)
         return HttpResponse(str(resp))
 
-    if conversation.last_message in ('received d','received p'):
-        conversation.name_address = content
+    if conversation.last_message in ('received d','received p'): #new step
+        if content == 'Y':
+            msg = resp.message("Address confirmed ! Here is a link to our menu:" + menu_link + ". Please order by texting 'Add' with the dish number like 'Add 1', or clicking the button in the menu. When you are finished, just text us 'check out'.")
+            conversation.name_address = customer.address
+        else:
+            conversation.name_address = content
+            msg = resp.message("We have received your info! Here is a link to our menu:" + menu_link + ". Please order by texting 'Add' with the dish number like 'Add 1', or clicking the button in the menu. When you are finished, just text us 'check out'.")
         conversation.last_message = 'received name'
-        conversation.save()
-        msg = resp.message("We have received your info! Here is a link to our menu:" + menu_link + ". Please order by texting 'Add' with the dish number like 'Add 1', or clicking the button in the menu. When you are finished, just text us 'check out'.")
+        conversation.save() 
         return HttpResponse(str(resp))
 
     add_pattern = re.compile('[Aa]dd')
