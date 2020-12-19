@@ -3,9 +3,7 @@ Django, Python, PostgreSQL, Twilio, Stripe, Ngnix, Gunicorn, DigitalOcean <br />
 use Memcached for sessions <br />
 see deployed website on http://www.mygoodcanteen.com <br />
 see project demo on https://rola1993.github.io <br />
-<br />
-This project's github profile mistakenly shows another contributor because of a configuration problem. All the code is produced by La Luo.<br />
-<br />
+
 
 Note:<br />
 To enable remote access to PostgreSQL server: <br />
